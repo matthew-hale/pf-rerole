@@ -1,26 +1,26 @@
 from enum import Enum
 
-def total(bonuses: list[dict]) -> int:
-    """Calculate the total value of the provided bonuses."""
-    applied_bonuses = applied(bonuses)
+def total(effects: list[dict]) -> int:
+    """Calculate the total value of the provided effects."""
+    applied_effects = applied(effects)
 
-    values = [b['value'] for b in applied_bonuses]
+    values = [b['value'] for b in applied_effects]
 
     return sum(values)
 
-def applied(bonuses: list[dict]) -> list[dict]:
-    """Filter out bonuses that do not apply due to stacking rules.
+def applied(effects: list[dict]) -> list[dict]:
+    """Filter out effects that do not apply due to stacking rules.
 
     Bonus stacking rules are not that complicated:
 
     * Bonuses/penalties of the same type generally do not stack, with some exceptions
     * The largest absolute value of each type of bonus and penalty will be applied
     """
-    penalties = list(filter(penalty, bonuses))
-    positive_bonuses = list(filter(positive_bonus, bonuses))
+    penalties = list(filter(penalty, effects))
+    bonuses = list(filter(bonus, effects))
 
     non_stacking_penalties = list(filter(non_stacking, penalties))
-    non_stacking_bonuses = list(filter(non_stacking, positive_bonuses))
+    non_stacking_bonuses = list(filter(non_stacking, bonuses))
 
     non_stacking_penalties_by_type = {}
     for p in non_stacking_penalties:
@@ -51,7 +51,7 @@ def applied(bonuses: list[dict]) -> list[dict]:
         largest_non_stacking_bonuses.append(largest_B)
 
     stacking_penalties = list(filter(stacking, penalties))
-    stacking_bonuses = list(filter(stacking, positive_bonuses))
+    stacking_bonuses = list(filter(stacking, bonuses))
 
     return stacking_penalties + stacking_bonuses + largest_non_stacking_penalties + largest_non_stacking_bonuses
 
@@ -91,5 +91,5 @@ def non_stacking(bonus: dict) -> bool:
 def penalty(bonus: dict) -> bool:
     return bonus['value'] < 0
 
-def positive_bonus(bonus: dict) -> bool:
+def bonus(bonus: dict) -> bool:
     return not penalty(bonus)

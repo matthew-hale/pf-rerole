@@ -1,11 +1,11 @@
 import math
-from rerole_lib import bonus
+from rerole_lib import effect
 
-def to_bonuses(ability: dict, bonuses: list[dict]) -> list[dict]:
+def to_effects(ability: dict, effects: list[dict]) -> list[dict]:
     base_value = ability['value']
     drain = ability.get('drain', 0)
 
-    modified_value = base_value + bonus.total(bonuses) - drain
+    modified_value = base_value + effect.total(effects) - drain
 
     ability_bonus = {
         "value": modifier(modified_value)

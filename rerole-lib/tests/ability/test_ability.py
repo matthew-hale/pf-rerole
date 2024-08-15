@@ -1,5 +1,5 @@
 from rerole_lib import ability
-from rerole_lib import bonus
+from rerole_lib import effect
 
 def test_ability_modifier_calculation():
     scores = [
@@ -20,7 +20,7 @@ def test_complex_calculation():
     }
     belt_of_strength = {
         "value": 3,
-        "type": bonus.type.ENHANCEMENT
+        "type": effect.type.ENHANCEMENT
     }
 
     # Ability drain should effectively reduce the strength score by 1; with the +3 from 
@@ -31,7 +31,7 @@ def test_complex_calculation():
     # score suffers a penalty of -1
     #
     # Ergo:
-    bonuses_should_be = [
+    effects_should_be = [
         {
             "value": 3
         },
@@ -39,9 +39,9 @@ def test_complex_calculation():
             "value": -1
         }
     ]
-    bonuses_are = ability.to_bonuses(
+    effects_are = ability.to_effects(
         ability=strength,
-        bonuses=[belt_of_strength]
+        effects=[belt_of_strength]
     )
 
-    assert bonuses_should_be == bonuses_are
+    assert effects_should_be == effects_are
