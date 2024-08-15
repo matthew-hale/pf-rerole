@@ -1,6 +1,6 @@
 from enum import Enum
 
-def total(bonuses):
+def total(bonuses: list[dict]) -> int:
     """Calculate the total value of the provided bonuses."""
     applied_bonuses = applied(bonuses)
 
@@ -8,7 +8,7 @@ def total(bonuses):
 
     return sum(values)
 
-def applied(bonuses):
+def applied(bonuses: list[dict]) -> list[dict]:
     """Filter out bonuses that do not apply due to stacking rules.
 
     Bonus stacking rules are not that complicated:
@@ -81,15 +81,15 @@ class type(Enum):
 
 _stacking = [type.CIRCUMSTANCE, type.DODGE, type.UNTYPED, None]
 
-def stacking(bonus):
+def stacking(bonus: dict) -> bool:
     t = bonus.get('type')
     return t in _stacking
 
-def non_stacking(bonus):
+def non_stacking(bonus: dict) -> bool:
     return not stacking(bonus)
 
-def penalty(bonus):
+def penalty(bonus: dict) -> bool:
     return bonus['value'] < 0
 
-def positive_bonus(bonus):
+def positive_bonus(bonus: dict) -> bool:
     return not penalty(bonus)
