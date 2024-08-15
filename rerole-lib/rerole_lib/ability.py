@@ -2,7 +2,7 @@ import math
 from rerole_lib import effect
 
 def to_effects(ability: dict, effects: list[dict]) -> list[dict]:
-    base_value = ability['value']
+    base_value = ability['score']
     drain = ability.get('drain', 0)
 
     modified_value = base_value + effect.total(effects) - drain
@@ -19,9 +19,9 @@ def to_effects(ability: dict, effects: list[dict]) -> list[dict]:
 
     return out
 
-def modifier(value: int) -> int:
+def modifier(score: int) -> int:
     """Calculates the appropriate ability modifier given an integer input representing an ability score."""
-    calculated = (value * 0.5) - 5
+    calculated = (score * 0.5) - 5
 
     return int(math.floor(calculated))
 

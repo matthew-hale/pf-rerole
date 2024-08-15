@@ -14,7 +14,7 @@ def test_ability_modifier_calculation():
 
 def test_complex_calculation():
     strength = {
-        "value": 15,
+        "score": 15,
         "damage": 3,
         "drain": 1
     }
