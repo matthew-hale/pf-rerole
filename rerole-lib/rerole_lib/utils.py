@@ -19,3 +19,29 @@ def get_in(data: dict, keys: list):
     if output == {}:
         output = None
     return output
+
+def search(data: dict, fn, path=[]) -> list | None:
+    """Return a list of key sequences whose values return True when `fn` is applied to them.
+
+    Somewhat like `filter`, except it returns the "locations" of the matching values within the input dictionary.
+    """
+    if not data:
+        return None
+
+    matching_key_sequences = []
+    for k, v in data.items():
+        current_path = list(path)
+        current_path.append(k)
+
+        v_matches_fn = fn(v)
+        v_has_children = isinstance(v, dict)
+
+        if v_matches_fn:
+            matching_key_sequences.append(current_path)
+        if v_has_children:
+            results = search(v, fn, current_path)
+            if results:
+                for x in results:
+                    matching_key_sequences.append(x)
+
+    return matching_key_sequences
