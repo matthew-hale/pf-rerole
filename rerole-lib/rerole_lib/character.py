@@ -1,6 +1,11 @@
 from rerole_lib import utils
 
 def build_effect_index(data: dict) -> dict | None:
+    """Finds all effects in character data, and builds an index of things->effect key sequences.
+
+    This function assumes that names of things are globally unique. If a character has an ability called 'strength' and a skill called 'strength', the resulting effect index will squish them together into a single entry.
+
+    In practice, things which have effects applied to them generally have globally unique names, as they're things like abilities, saving throws, skills, and various built-in rolls, like AC and spellcasting concentration checks."""
     effects = utils.search(data, lambda x: isinstance(x, dict) and "affects" in x.keys())
 
     if not effects:
