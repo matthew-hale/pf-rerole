@@ -45,3 +45,9 @@ def search(data: dict, fn, path=[]) -> list | None:
                     matching_key_sequences.append(x)
 
     return matching_key_sequences
+
+def add_or_append(data: dict, key, val):
+    """Append val to data[key], initializing with data[key] = [] if needed."""
+    if key not in data.keys():
+        data[key] = []
+    data[key].append(val)

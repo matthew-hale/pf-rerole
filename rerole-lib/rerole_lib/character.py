@@ -29,9 +29,7 @@ def build_effect_index(data: dict) -> dict | None:
 
                 items = data_group.keys()
                 for i in items:
-                    if i not in effect_index.keys():
-                        effect_index[i] = []
-                    effect_index[i].append(key_seq)
+                    utils.add_or_append(effect_index, i, key_seq)
             continue
 
         if not name:
@@ -45,8 +43,6 @@ def build_effect_index(data: dict) -> dict | None:
             if not data_item:
                 continue
 
-            if n not in effect_index.keys():
-                effect_index[n] = []
-            effect_index[n].append(key_seq)
+            utils.add_or_append(effect_index, n, key_seq)
 
     return effect_index
