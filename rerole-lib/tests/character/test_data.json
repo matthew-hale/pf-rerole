@@ -1,0 +1,43 @@
+{
+    "abilities": {
+        "strength": {
+            "score": 15,
+            "damage": 3,
+            "drain": 1
+        }
+    },
+    "skills": {
+        "climb": {
+            "ranks": 2,
+            "class": true,
+            "ability": "strength"
+        }
+    },
+    "spells": {
+        "mighty strength": {
+            "value": 8,
+            "type": "enhancement",
+            "affects": {
+                "group": "abilities",
+                "name": "strength"
+            }
+        },
+        "general skill buff": {
+            "value": 1,
+            "affects": {
+                "group": "skills"
+            }
+        }
+    },
+    "equipment": {
+        "belt of stronk": {
+            "description": "more stronk",
+            "value": 4,
+            "type": "enhancement",
+            "affects": {
+                "group": "abilities",
+                "name": "strength"
+            }
+        }
+    }
+}

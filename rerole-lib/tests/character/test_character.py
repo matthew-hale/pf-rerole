@@ -101,3 +101,42 @@ def test_build_effect_index():
         ["spells", "special deity power"],
         ["equipment", "headband of certain mental acuity", 2],
     ]
+
+def test_correct_skill_modifier():
+    data = c.load("tests/character/test_data.json")
+    effect_index = c.build_effect_index(data)
+
+    """Character data:
+    Strength:
+      Score: 15
+      Damage: 3
+      Drain: 1
+
+    Climb:
+      Ranks: 2
+      Class skill: True
+      Ability: Strength
+
+    Spells:
+      Mighty Strength:
+        +8 Enhancement to Strength
+      General Skill Buff:
+        +1 to all skills
+    Equipment:
+      Belt of Stronk:
+        +4 Enhancement to Strength (cancelled out by Mighty Strength)
+
+    Effective Strength score: 22
+      15 - 1 (drain) +8 (Mighty Strength)
+    Effective Strength modifier: 6
+    Strength damage penalty: -1
+
+    Skill modifier: 11
+      2 (ranks)
+     +3 (class skill)
+     +6 (strength mod)
+     -1 (strength damage penalty)
+     +1 (general skill buff spell)"""
+
+    skill_mod = c.roll_skill(data, effect_index, "climb")
+    assert skill_mod == 11
