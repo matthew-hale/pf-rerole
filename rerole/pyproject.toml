@@ -1,0 +1,14 @@
+[tool.poetry]
+name = "rerole"
+version = "0.0.0"
+description = "pf-rerole's CLI tool"
+authors = ["Matt Hale <matthew.hale@protonmail.com>"]
+readme = "readme.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
