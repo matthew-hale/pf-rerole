@@ -14,7 +14,7 @@ Here's how one would calculate the modifier of a character's "acrobatics" skill:
 from rerole_lib import character
 
 data = character.load("path/to/data.json")
-effect_index = character.build_effect_index
+effect_index = character.build_effect_index(data)
 
 character.roll_skill(data, effect_index, "acrobatics")
 
