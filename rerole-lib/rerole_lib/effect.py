@@ -86,15 +86,15 @@ class type(Enum):
 
 _stacking = [type.CIRCUMSTANCE, type.DODGE, type.UNTYPED, None]
 
-def stacking(bonus: dict) -> bool:
-    t = bonus.get('type')
+def stacking(e: dict) -> bool:
+    t = e.get("type")
     return t in _stacking
 
-def non_stacking(bonus: dict) -> bool:
-    return not stacking(bonus)
+def non_stacking(e: dict) -> bool:
+    return not stacking(e)
 
-def penalty(bonus: dict) -> bool:
-    return bonus['value'] < 0
+def penalty(e: dict) -> bool:
+    return e["value"] < 0
 
-def bonus(bonus: dict) -> bool:
-    return not penalty(bonus)
+def bonus(e: dict) -> bool:
+    return not penalty(e)
