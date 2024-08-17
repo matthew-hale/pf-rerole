@@ -4,13 +4,37 @@
             "score": 15,
             "damage": 3,
             "drain": 1
+        },
+        "dexterity": {
+            "score": 14
+        },
+        "constitution": {
+            "score": 13
+        },
+        "intelligence": {
+            "score": 12
+        },
+        "wisdom": {
+            "score": 11
+        },
+        "charisma": {
+            "score": 20
         }
     },
     "skills": {
+        "acrobatics": {
+            "ranks": 0,
+            "class": true,
+            "ability": "dexterity"
+        },
         "climb": {
             "ranks": 2,
             "class": true,
             "ability": "strength"
+        },
+        "knowledge (religion)": {
+            "ranks": 3,
+            "ability": "intelligence"
         }
     },
     "spells": {
@@ -26,6 +50,15 @@
             "value": 1,
             "affects": {
                 "group": "skills"
+            }
+        }
+    },
+    "feats": {
+        "skill focus (acrobatics)": {
+            "value": 3,
+            "affects": {
+                "group": "skills",
+                "name": "acrobatics"
             }
         }
     },
