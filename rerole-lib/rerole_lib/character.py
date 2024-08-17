@@ -104,7 +104,7 @@ def ability_to_effects(data: dict, effect_index: dict, ability_name: str) -> lis
     if not ability_data:
         return None
 
-    ability_effect_keys = effect_index.get(ability_name, [[]])
+    ability_effect_keys = effect_index.get(ability_name, [])
     ability_effects = [utils.get_in(data, ks) for ks in ability_effect_keys]
     ability_as_effects = ability.to_effects(ability_data, ability_effects)
 
