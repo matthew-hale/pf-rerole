@@ -3,6 +3,8 @@ from enum import Enum
 def total(effects: list[dict]) -> int:
     """Calculate the total value of the provided effects."""
     applied_effects = applied(effects)
+    if not applied_effects:
+        return 0
 
     values = [b['value'] for b in applied_effects]
 
@@ -16,6 +18,9 @@ def applied(effects: list[dict]) -> list[dict]:
     * Bonuses/penalties of the same type generally do not stack, with some exceptions
     * The largest absolute value of each type of bonus and penalty will be applied
     """
+    if not effects:
+        return []
+
     penalties = list(filter(penalty, effects))
     bonuses = list(filter(bonus, effects))
 
