@@ -1,4 +1,11 @@
+import json
+
 from rerole_lib import utils
+
+def load(filepath):
+    with open(filepath) as f:
+        data = json.load(f)
+    return data
 
 def build_effect_index(data: dict) -> dict | None:
     """Finds all effects in character data, and builds an index of things->effect key sequences.
