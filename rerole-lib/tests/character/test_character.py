@@ -1,7 +1,7 @@
 from rerole_lib import character as c
 from rerole_lib import utils
 
-def test_foo():
+def test_build_effect_index():
     data = {
         "abilities": {
             "strength": {
