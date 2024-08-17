@@ -39,7 +39,7 @@ def get_in(data: dict, keys: list):
     }
     """
     output = reduce(lambda c, k: c.get(k, {}), keys, data)
-    if output == {}:
+    if output == {} or not keys:
         output = None
     return output
 
