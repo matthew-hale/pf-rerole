@@ -14,6 +14,29 @@ def get_in(data: dict, keys: list):
     want = get_in(data, ["b", "alpha"])
     if want is None:
         ...
+
+    Note that the result is the actual object within `data`; if it's mutable, updates to it will also update `data` in place.
+
+    E.g.:
+
+    data = {
+        "a": {
+            "b": {
+                "value": 1
+            }
+        }
+    }
+
+    b = get_in(data, ["a", "b"])
+    b["value"] = "banana"
+    print(data)
+    {
+        "a": {
+            "b": {
+                "value": "banana"
+            }
+        }
+    }
     """
     output = reduce(lambda c, k: c.get(k, {}), keys, data)
     if output == {}:
