@@ -33,7 +33,8 @@ def build_effect_index(data: dict) -> dict | None:
             continue
 
         # If multiple groups, treat "affects" as "everything in these groups"
-        if isinstance(group, list):
+        multiple_groups = isinstance(group, list)
+        if multiple_groups:
             for g in group:
                 data_group = data.get(g)
                 if not data_group:
@@ -45,6 +46,13 @@ def build_effect_index(data: dict) -> dict | None:
             continue
 
         if not name:
+            data_group = data.get(group)
+            if not data_group:
+                continue
+
+            items = data_group.keys()
+            for i in items:
+                utils.add_or_append(effect_index, i, key_seq)
             continue
 
         if not isinstance(name, list):
