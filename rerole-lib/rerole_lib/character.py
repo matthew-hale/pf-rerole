@@ -2,7 +2,7 @@ import json
 
 from copy import deepcopy
 
-from rerole_lib import ability, effect, skill, utils
+from rerole_lib import ability, effect, save, skill, utils
 
 def load(f):
     data = json.load(f)
@@ -17,6 +17,21 @@ def calculate(data: dict) -> dict:
         effect_total = effect.total(ability_effects)
         v = ability.calculate(v, effect_total)
         data["abilities"][k] = v
+
+    for k, v in data.get("saves", {}).items():
+        save_effects = resolve_effect_index(data, k)
+        save_effect_total = effect.total(save_effects)
+
+        save_ability_modifier = 0
+        save_ability_penalty = 0
+        save_ability = utils.get_in(data, ["abilities", v.get("ability")])
+        if save_ability:
+            save_ability_modifier = save_ability.get("modifier", 0)
+            save_ability_penalty = ability.penalty(save_ability)
+
+        effect_total = save_effect_total + save_ability_modifier + save_ability_penalty
+        v = save.calculate(v, effect_total)
+        data["saves"][k] = v
 
     for k, v in data.get("skills", {}).items():
         skill_effects = resolve_effect_index(data, k)
