@@ -20,9 +20,9 @@ def modifier(score: int) -> int:
     return int(math.floor(calculated))
 
 def penalty(ability: dict) -> int:
-    d = ability.get('damage')
-    if not d:
-        return None
+    d = ability.get("damage", 0)
+    if d == 0:
+        return 0
 
     calculation = 0.5 * d
     value = -int(math.floor(calculation))
