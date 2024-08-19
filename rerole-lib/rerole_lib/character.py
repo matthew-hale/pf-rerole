@@ -2,14 +2,41 @@ import json
 
 from copy import deepcopy
 
-from rerole_lib import ability
-from rerole_lib import effect
-from rerole_lib import utils
+from rerole_lib import ability, effect, skill, utils
 
 def load(f):
     data = json.load(f)
     data = update_effect_index(data)
     return data
+
+def calculate(data: dict) -> dict:
+    out_data = deepcopy(data)
+    if not out_data.get("effect_index"):
+        out_data = update_effect_index(data)
+    effect_index = out_data.get("effect_index", {})
+
+    for k, v in out_data.get("abilities", {}).items():
+        ability_effects = resolve_effect_index(out_data, k)
+        effect_total = effect.total(ability_effects)
+        v = ability.calculate(v, effect_total)
+        out_data["abilities"][k] = v
+
+    for k, v in out_data.get("skills", {}).items():
+        skill_effects = resolve_effect_index(out_data, k)
+        skill_effect_total = effect.total(skill_effects)
+
+        skill_ability_modifier = 0
+        skill_ability_penalty = 0
+        skill_ability = utils.get_in(out_data, ["abilities", v.get("ability")])
+        if skill_ability:
+            skill_ability_modifier = skill_ability.get("modifier", 0)
+            skill_ability_penalty = ability.penalty(skill_ability)
+
+        effect_total = skill_effect_total + skill_ability_modifier + skill_ability_penalty
+        v = skill.calculate(v, effect_total)
+        out_data["skills"][k] = v
+
+    return out_data
 
 def update_effect_index(data: dict) -> dict:
     d = deepcopy(data)
