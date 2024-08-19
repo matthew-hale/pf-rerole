@@ -8,6 +8,7 @@ from rerole_lib import utils
 
 def load(f):
     data = json.load(f)
+    data = update_effect_index(data)
     return data
 
 def update_effect_index(data: dict) -> dict:
