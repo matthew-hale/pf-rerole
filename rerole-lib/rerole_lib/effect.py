@@ -85,6 +85,20 @@ class type(Enum):
 
 
 _stacking = [type.CIRCUMSTANCE, type.DODGE, type.UNTYPED, None]
+_active_states = ["active", None]
+_inactive_states = ["inactive", "suppressed", "disabled"]
+"""
+"active" and "inactive" indicate the status of a togglable effect.
+
+"suppressed" indicates a temporarily suppressed permanent effect.
+
+"disabled" indicates a temporarily suppressed togglable effect.
+
+An effect without a "state" field is assumed to be permanently active.
+"""
+
+def active(e: dict) -> bool:
+    return e.get("state") in _active_states
 
 def stacking(e: dict) -> bool:
     t = e.get("type")
