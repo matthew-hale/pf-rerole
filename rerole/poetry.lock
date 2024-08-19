@@ -2,16 +2,16 @@
 
 [[package]]
 name = "rerole-lib"
-version = "0.2.0"
+version = "0.3.0"
 description = "A library for interacting with Pathfinder 1E character sheet data."
 optional = false
 python-versions = "<4.0,>=3.12"
 files = [
-    {file = "rerole_lib-0.2.0-py3-none-any.whl", hash = "sha256:4ddb7ef4ab9a88423fbeec494ae1918c2602e0fcb111f2204650d4e00a5e2a8a"},
-    {file = "rerole_lib-0.2.0.tar.gz", hash = "sha256:7327a8daa4f7b67a0f8c1f107b1070af61761419e4d1fb6404ef35797dd0e1a1"},
+    {file = "rerole_lib-0.3.0-py3-none-any.whl", hash = "sha256:618dc64ef4c0b702ceaade26f8972708b650051a50a4346fb59e8fe20e3ce270"},
+    {file = "rerole_lib-0.3.0.tar.gz", hash = "sha256:3e40153f7cb57173e668e9cc857aea98dbbc2ed914b0477d39334292aab163e0"},
 ]
 
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "62e989841a413b35278f2fdfe3ebde26012eb07e801f3f945c874baa990830e6"
+content-hash = "a89916d9b2c6124d6b4f052e481f5d04262a1d9d0692d39cf66da5a85dd3780d"
