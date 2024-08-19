@@ -2,7 +2,11 @@ import json
 
 from copy import deepcopy
 
-from rerole_lib import ability, effect, save, skill, utils
+from rerole_lib import ability
+from rerole_lib import effect
+from rerole_lib import save
+from rerole_lib import skill
+from rerole_lib import utils
 
 def load(f):
     data = json.load(f)
