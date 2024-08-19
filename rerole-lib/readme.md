@@ -14,7 +14,7 @@ import json
 from rerole_lib import character
 
 with open("tests/character/test_data.json") as f:
-data = json.load()
+    data = json.load()
 
 print(data["skills"]["climb"])
 """
