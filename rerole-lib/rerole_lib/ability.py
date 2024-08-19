@@ -1,21 +1,15 @@
 import math
-from rerole_lib import effect
 
-def to_effects(ability: dict, effects: list[dict]) -> list[dict]:
-    base_value = ability['score']
-    drain = ability.get('drain', 0)
+from copy import deepcopy
 
-    modified_value = base_value + effect.total(effects) - drain
+def calculate(a: dict, effect_total: int = 0):
+    out = deepcopy(a)
+    base_value = out.get("score", 0)
+    drain = out.get("drain", 0)
 
-    ability_bonus = {
-        "value": modifier(modified_value)
-    }
-
-    out = [ability_bonus]
-
-    ability_penalty = penalty(ability)
-    if ability_penalty:
-        out.append(ability_penalty)
+    modified_score = base_value - drain + effect_total
+    out["modified_score"] = modified_score
+    out["modifier"] = modifier(modified_score)
 
     return out
 
