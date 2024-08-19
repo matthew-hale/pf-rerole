@@ -107,6 +107,7 @@ def test_calculate():
     data = c.calculate(data)
 
     assert utils.get_in(data, ["skills", "climb", "modifier"]) == 11
+    assert utils.get_in(data, ["saves", "will", "modifier"]) == 9
 
 def test_antimagic():
     with open("tests/character/test_data.json") as f:
