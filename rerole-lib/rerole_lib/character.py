@@ -81,6 +81,13 @@ def build_effect_index(data: dict) -> dict | None:
 
     return effect_index
 
+def resolve_effect_index(data: dict, name: str) -> list[dict]:
+    effect_key_seqs = utils.get_in(data, ["effect_index", name])
+    if not effect_key_seqs:
+        return []
+
+    return [utils.get_in(data, seq) for seq in effect_key_seqs]
+
 def roll_skill(data: dict, effect_index: dict, skill_name: str) -> int | None:
     """Calculate the final modifier of the provided skill name."""
     skill_data = utils.get_in(data, ["skills", skill_name])
