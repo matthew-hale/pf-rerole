@@ -1,5 +1,3 @@
-import json
-
 from copy import deepcopy
 
 from rerole_lib import ability
@@ -7,10 +5,6 @@ from rerole_lib import effect
 from rerole_lib import save
 from rerole_lib import skill
 from rerole_lib import utils
-
-def load(f):
-    data = json.load(f)
-    return data
 
 def calculate(data: dict) -> dict:
     data = update_effect_index(data)
