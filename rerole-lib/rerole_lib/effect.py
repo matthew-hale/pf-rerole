@@ -21,8 +21,9 @@ def applied(effects: list[dict]) -> list[dict]:
     if not effects:
         return []
 
-    penalties = list(filter(penalty, effects))
-    bonuses = list(filter(bonus, effects))
+    active_effects = list(filter(active, effects))
+    penalties = list(filter(penalty, active_effects))
+    bonuses = list(filter(bonus, active_effects))
 
     non_stacking_penalties = list(filter(non_stacking, penalties))
     non_stacking_bonuses = list(filter(non_stacking, bonuses))
