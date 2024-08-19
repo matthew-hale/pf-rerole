@@ -21,6 +21,4 @@ def test_calculate():
     calc_strength = ability.calculate(strength, effect_total)
 
     assert calc_strength.get("modifier") == 4
-    assert ability.penalty(calc_strength) == {
-        "value": -1
-    }
+    assert ability.penalty(calc_strength) == -1
