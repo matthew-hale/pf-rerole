@@ -41,6 +41,8 @@
         "mighty strength": {
             "value": 8,
             "type": "enhancement",
+            "magic": true,
+            "state": "active",
             "affects": {
                 "group": "abilities",
                 "name": "strength"
@@ -48,6 +50,8 @@
         },
         "general skill buff": {
             "value": 1,
+            "magic": true,
+            "state": "active",
             "affects": {
                 "group": "skills"
             }
@@ -66,10 +70,21 @@
         "belt of stronk": {
             "description": "more stronk",
             "value": 4,
+            "magic": true,
             "type": "enhancement",
             "affects": {
                 "group": "abilities",
                 "name": "strength"
+            }
+        },
+        "belt of dex": {
+            "description": "more dex",
+            "value": 6,
+            "magic": true,
+            "type": "enhancement",
+            "affects": {
+                "group": "abilities",
+                "name": "dexterity"
             }
         }
     }
