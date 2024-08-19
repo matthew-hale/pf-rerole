@@ -1,5 +1,4 @@
 from rerole_lib import ability
-from rerole_lib import effect
 
 def test_ability_modifier_calculation():
     scores = [
@@ -12,36 +11,16 @@ def test_ability_modifier_calculation():
     for i, s in enumerate(scores):
         assert ability.modifier(s) == modifiers[i]
 
-def test_complex_calculation():
+def test_calculate():
     strength = {
         "score": 15,
         "damage": 3,
         "drain": 1
     }
-    belt_of_strength = {
-        "value": 3,
-        "type": effect.type.ENHANCEMENT
+    effect_total = 4
+    calc_strength = ability.calculate(strength, effect_total)
+
+    assert calc_strength.get("modifier") == 4
+    assert ability.penalty(calc_strength) == {
+        "value": -1
     }
-
-    # Ability drain should effectively reduce the strength score by 1; with the +3 from 
-    # the belt, the effective strength modifier should be +3.
-    #
-    # Ability _damage_ does not change the calculation of the ability modifier 
-    # directly; rather, for every 2 points of damage, anything utilizing that ability 
-    # score suffers a penalty of -1
-    #
-    # Ergo:
-    effects_should_be = [
-        {
-            "value": 3
-        },
-        {
-            "value": -1
-        }
-    ]
-    effects_are = ability.to_effects(
-        ability=strength,
-        effects=[belt_of_strength]
-    )
-
-    assert effects_should_be == effects_are
