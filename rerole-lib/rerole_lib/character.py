@@ -113,15 +113,3 @@ def resolve_effect_index(data: dict, name: str) -> list[dict]:
         return []
 
     return [utils.get_in(data, seq) for seq in effect_key_seqs]
-
-def ability_to_effects(data: dict, effect_index: dict, ability_name: str) -> list | None:
-    """Apply all relevant effects to the specified ability, then convert that ability to a list of effects to be applied to something else."""
-    ability_data = utils.get_in(data, ["abilities", ability_name])
-    if not ability_data:
-        return None
-
-    ability_effect_keys = effect_index.get(ability_name, [])
-    ability_effects = [utils.get_in(data, ks) for ks in ability_effect_keys]
-    ability_as_effects = ability.to_effects(ability_data, ability_effects)
-
-    return ability_as_effects
