@@ -1,5 +1,7 @@
 import json
 
+from copy import deepcopy
+
 from rerole_lib import ability
 from rerole_lib import effect
 from rerole_lib import utils
@@ -7,6 +9,16 @@ from rerole_lib import utils
 def load(f):
     data = json.load(f)
     return data
+
+def update_effect_index(data: dict) -> dict:
+    d = deepcopy(data)
+
+    effect_index = build_effect_index(d)
+    if not effect_index:
+        return d
+
+    d["effect_index"] = effect_index
+    return d
 
 def build_effect_index(data: dict) -> dict | None:
     """Finds all effects in character data, and builds an index of things->effect key sequences.
