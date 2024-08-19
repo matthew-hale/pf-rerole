@@ -4,12 +4,20 @@ import sys
 
 from rerole_lib import character as c, utils
 
+_output_formats = ["text", "json"]
+
 def parse_arguments():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "filename",
         type=str,
         help="Path to character data file.",
+    )
+    parser.add_argument(
+        "--format", "-f",
+        choices=_output_formats,
+        default=_output_formats[0],
+        help="Output format",
     )
 
     args = parser.parse_args()
