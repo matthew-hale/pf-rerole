@@ -1,5 +1,3 @@
-import json
-
 from copy import deepcopy
 
 from rerole_lib import ability
@@ -8,11 +6,8 @@ from rerole_lib import save
 from rerole_lib import skill
 from rerole_lib import utils
 
-def load(f):
-    data = json.load(f)
-    return data
-
 def calculate(data: dict) -> dict:
+    """Calulate all relevant modifiers, returning a new dict."""
     data = update_effect_index(data)
     effect_index = data.get("effect_index", {})
 
@@ -55,14 +50,15 @@ def calculate(data: dict) -> dict:
     return data
 
 def update_effect_index(data: dict) -> dict:
-    d = deepcopy(data)
+    """Add an up-to-date effect index to the provided character dict."""
+    data = deepcopy(data)
 
-    effect_index = build_effect_index(d)
+    effect_index = build_effect_index(data)
     if not effect_index:
-        return d
+        return data
 
-    d["effect_index"] = effect_index
-    return d
+    data["effect_index"] = effect_index
+    return data
 
 def build_effect_index(data: dict) -> dict | None:
     """Finds all effects in character data, and builds an index of things->effect key sequences.
@@ -125,6 +121,7 @@ def build_effect_index(data: dict) -> dict | None:
     return effect_index
 
 def resolve_effect_index(data: dict, name: str) -> list[dict]:
+    """Return a list of effects that are affecting the named item."""
     effect_key_seqs = utils.get_in(data, ["effect_index", name])
     if not effect_key_seqs:
         return []
@@ -132,10 +129,9 @@ def resolve_effect_index(data: dict, name: str) -> list[dict]:
     return [utils.get_in(data, seq) for seq in effect_key_seqs]
 
 def activate_antimagic_field(data: dict) -> dict:
-    """Apply the proper suppression state to each magical effect present.
-    """
+    """Apply the proper suppression state to each magical effect present."""
     data = deepcopy(data)
-    active_magic_effect_key_seqs = utils.search(data, lambda x: isinstance(x, dict) and "affects" in x.keys() and x.get("magic", False) and effect.active(x))
+    active_magic_effect_key_seqs = utils.search(data, _active_magic_effect)
     if not active_magic_effect_key_seqs:
         return data
 
@@ -152,8 +148,9 @@ def activate_antimagic_field(data: dict) -> dict:
     return data
 
 def deactivate_antimagic_field(data: dict) -> dict:
+    """Like activate_antimagic_field, but in reverse."""
     data = deepcopy(data)
-    inactive_magic_effect_key_seqs = utils.search(data, lambda x: isinstance(x, dict) and "affects" in x.keys() and x.get("magic", False) and effect.inactive(x))
+    inactive_magic_effect_key_seqs = utils.search(data, _inactive_magic_effect)
     if not inactive_magic_effect_key_seqs:
         return data
 
@@ -168,3 +165,9 @@ def deactivate_antimagic_field(data: dict) -> dict:
 
     data = calculate(data)
     return data
+
+def _active_magic_effect(e: dict) -> bool:
+    return isinstance(e, dict) and effect.active(e) and e.get("magic", False)
+
+def _inactive_magic_effect(e: dict) -> bool:
+    return isinstance(e, dict) and effect.inactive(e) and e.get("magic", False)

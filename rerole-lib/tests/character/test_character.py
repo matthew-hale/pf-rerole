@@ -1,3 +1,5 @@
+import json
+
 from rerole_lib import character as c, utils
 
 def test_build_effect_index():
@@ -103,7 +105,7 @@ def test_build_effect_index():
 
 def test_calculate():
     with open("tests/character/test_data.json") as f:
-        data = c.load(f)
+        data = json.load(f)
     data = c.calculate(data)
 
     assert utils.get_in(data, ["skills", "climb", "modifier"]) == 11
@@ -111,7 +113,7 @@ def test_calculate():
 
 def test_antimagic():
     with open("tests/character/test_data.json") as f:
-        data = c.load(f)
+        data = json.load(f)
 
     data = c.calculate(data)
     assert utils.get_in(data, ["skills", "acrobatics", "modifier"]) == 9

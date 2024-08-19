@@ -61,7 +61,7 @@ def applied(effects: list[dict]) -> list[dict]:
 
     return stacking_penalties + stacking_bonuses + largest_non_stacking_penalties + largest_non_stacking_bonuses
 
-class type(Enum):
+class type(str, Enum):
     UNTYPED = "untyped"
     ALCHEMICAL = "alchemical"
     ARMOR = "armor"

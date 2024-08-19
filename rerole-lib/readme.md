@@ -9,10 +9,12 @@ In general, this library is written in a functional style. It is intended that s
 For sample data, peruse the .json files in any of the test directories.
 
 ```
+import json
+
 from rerole_lib import character
 
 with open("tests/character/test_data.json") as f:
-data = character.load()
+data = json.load()
 
 print(data["skills"]["climb"])
 """
