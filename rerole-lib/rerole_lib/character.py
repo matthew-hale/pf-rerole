@@ -6,7 +6,6 @@ from rerole_lib import ability, effect, skill, utils
 
 def load(f):
     data = json.load(f)
-    data = update_effect_index(data)
     return data
 
 def calculate(data: dict) -> dict:
