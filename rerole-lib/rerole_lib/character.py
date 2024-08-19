@@ -9,31 +9,31 @@ def load(f):
     return data
 
 def calculate(data: dict) -> dict:
-    out_data = update_effect_index(data)
-    effect_index = out_data.get("effect_index", {})
+    data = update_effect_index(data)
+    effect_index = data.get("effect_index", {})
 
-    for k, v in out_data.get("abilities", {}).items():
-        ability_effects = resolve_effect_index(out_data, k)
+    for k, v in data.get("abilities", {}).items():
+        ability_effects = resolve_effect_index(data, k)
         effect_total = effect.total(ability_effects)
         v = ability.calculate(v, effect_total)
-        out_data["abilities"][k] = v
+        data["abilities"][k] = v
 
-    for k, v in out_data.get("skills", {}).items():
-        skill_effects = resolve_effect_index(out_data, k)
+    for k, v in data.get("skills", {}).items():
+        skill_effects = resolve_effect_index(data, k)
         skill_effect_total = effect.total(skill_effects)
 
         skill_ability_modifier = 0
         skill_ability_penalty = 0
-        skill_ability = utils.get_in(out_data, ["abilities", v.get("ability")])
+        skill_ability = utils.get_in(data, ["abilities", v.get("ability")])
         if skill_ability:
             skill_ability_modifier = skill_ability.get("modifier", 0)
             skill_ability_penalty = ability.penalty(skill_ability)
 
         effect_total = skill_effect_total + skill_ability_modifier + skill_ability_penalty
         v = skill.calculate(v, effect_total)
-        out_data["skills"][k] = v
+        data["skills"][k] = v
 
-    return out_data
+    return data
 
 def update_effect_index(data: dict) -> dict:
     d = deepcopy(data)
