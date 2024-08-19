@@ -88,6 +88,7 @@ class type(Enum):
 _stacking = [type.CIRCUMSTANCE, type.DODGE, type.UNTYPED, None]
 _active_states = ["active", None]
 _inactive_states = ["inactive", "suppressed", "disabled"]
+_permanent_states = ["suppressed", None]
 """
 "active" and "inactive" indicate the status of a togglable effect.
 
@@ -98,8 +99,17 @@ _inactive_states = ["inactive", "suppressed", "disabled"]
 An effect without a "state" field is assumed to be permanently active.
 """
 
+def permanent(e: dict) -> bool:
+    return e.get("state") in _permanent_states
+
+def togglable(e: dict) -> bool:
+    return not permanent(e)
+
 def active(e: dict) -> bool:
     return e.get("state") in _active_states
+
+def inactive(e: dict) -> bool:
+    return not active(e)
 
 def stacking(e: dict) -> bool:
     t = e.get("type")
