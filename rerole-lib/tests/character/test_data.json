@@ -21,6 +21,20 @@
             "score": 20
         }
     },
+    "saves": {
+        "fortitude": {
+            "value": 1,
+            "ability": "constitution"
+        },
+        "reflex": {
+            "value": 3,
+            "ability": "dexterity"
+        },
+        "will": {
+            "value": 6,
+            "ability": "wisdom"
+        }
+    },
     "skills": {
         "acrobatics": {
             "ranks": 0,
@@ -64,6 +78,13 @@
                 "group": "skills",
                 "name": "acrobatics"
             }
+        },
+        "iron will": {
+            "value": 2,
+            "affects": {
+                "group": "saves",
+                "name": "will"
+            }
         }
     },
     "equipment": {
@@ -85,6 +106,13 @@
             "affects": {
                 "group": "abilities",
                 "name": "dexterity"
+            }
+        },
+        "cloak of resistance": {
+            "value": 1,
+            "type": "resistance",
+            "affects": {
+                "group": "saves"
             }
         }
     }
