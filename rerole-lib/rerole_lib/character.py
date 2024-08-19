@@ -9,9 +9,7 @@ def load(f):
     return data
 
 def calculate(data: dict) -> dict:
-    out_data = deepcopy(data)
-    if not out_data.get("effect_index"):
-        out_data = update_effect_index(data)
+    out_data = update_effect_index(data)
     effect_index = out_data.get("effect_index", {})
 
     for k, v in out_data.get("abilities", {}).items():
