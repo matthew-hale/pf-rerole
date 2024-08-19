@@ -8,22 +8,22 @@ In general, this library is written in a functional style. It is intended that s
 
 For sample data, peruse the .json files in any of the test directories.
 
-Here's how one would calculate the modifier of a character's "acrobatics" skill:
-
 ```
 from rerole_lib import character
 
-data = character.load("path/to/data.json")
-effect_index = character.build_effect_index(data)
+with open("tests/character/test_data.json") as f:
+data = character.load()
 
-character.roll_skill(data, effect_index, "acrobatics")
-
+print(data["skills"]["climb"])
 """
-Result should be:
-    skill ranks
-  + class skill bonus (if applicable)
-  + associated ability modifier (dynamically calculated)
-  + effects applying to skill
+{'ranks': 2, 'class': True, 'ability': 'strength'}
+"""
+
+calculated = character.calculate(data)
+
+print(calculated["skills"]["climb"])
+"""
+{'ranks': 2, 'class': True, 'ability': 'strength', 'modifier': 11}
 """
 ```
 
