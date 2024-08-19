@@ -111,3 +111,41 @@ def resolve_effect_index(data: dict, name: str) -> list[dict]:
         return []
 
     return [utils.get_in(data, seq) for seq in effect_key_seqs]
+
+def activate_antimagic_field(data: dict) -> dict:
+    """Apply the proper suppression state to each magical effect present.
+    """
+    data = deepcopy(data)
+    active_magic_effect_key_seqs = utils.search(data, lambda x: isinstance(x, dict) and "affects" in x.keys() and x.get("magic", False) and effect.active(x))
+    if not active_magic_effect_key_seqs:
+        return data
+
+    for seq in active_magic_effect_key_seqs:
+        e = utils.get_in(data, seq)
+        if not e:
+            continue
+        if effect.permanent(e):
+            e["state"] = "suppressed"
+        elif effect.togglable(e):
+            e["state"] = "disabled"
+
+    data = calculate(data)
+    return data
+
+def deactivate_antimagic_field(data: dict) -> dict:
+    data = deepcopy(data)
+    inactive_magic_effect_key_seqs = utils.search(data, lambda x: isinstance(x, dict) and "affects" in x.keys() and x.get("magic", False) and effect.inactive(x))
+    if not inactive_magic_effect_key_seqs:
+        return data
+
+    for seq in inactive_magic_effect_key_seqs:
+        e = utils.get_in(data, seq)
+        if not e:
+            continue
+        if effect.permanent(e):
+            _ = e.pop("state", None)
+        elif effect.togglable(e):
+            e["state"] = "active"
+
+    data = calculate(data)
+    return data
