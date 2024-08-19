@@ -76,6 +76,16 @@
                 "group": "abilities",
                 "name": "strength"
             }
+        },
+        "belt of dex": {
+            "description": "more dex",
+            "value": 6,
+            "magic": true,
+            "type": "enhancement",
+            "affects": {
+                "group": "abilities",
+                "name": "dexterity"
+            }
         }
     }
 }
