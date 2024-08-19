@@ -4,9 +4,8 @@ from rerole_lib import ability
 from rerole_lib import effect
 from rerole_lib import utils
 
-def load(filepath):
-    with open(filepath) as f:
-        data = json.load(f)
+def load(f):
+    data = json.load(f)
     return data
 
 def build_effect_index(data: dict) -> dict | None:
