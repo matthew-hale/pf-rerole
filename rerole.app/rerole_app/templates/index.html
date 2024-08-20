@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Rerole</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}"/>
+</head>
+
+<body>
+<div id="header">
+    <h1>Name: {{ data["name"] }}</h1>
+</div>
+<div id="abilities">
+    <table>
+        <tr>
+            <th>Ability</th>
+            <th>Score</th>
+            <th>Modified Score</th>
+            <th>Modifier</th>
+        </tr>
+    {% for a in data["abilities"] %}
+        <tr>
+            <td>{{ a }}</td>
+            <td>{{ data["abilities"][a]["score"] }}</td>
+            <td>{{ data["abilities"][a]["modified_score"] }}</td>
+            <td>{{ data["abilities"][a]["modifier"] }}</td>
+        </tr>
+    {% endfor %}
+    </table>
+</div>
+<div id="saves">
+    <table>
+        <tr>
+            <th>Saving Throw</th>
+            <th>Base Value</th>
+            <th>Ability</th>
+            <th>Modified Value</th>
+        </tr>
+        {% for s in data["saves"] %}
+        <tr>
+            <td>{{ s }}</td>
+            <td>{{ data["saves"][s]["value"] }}</td>
+            <td>{{ data["saves"][s]["ability"] }}</td>
+            <td>{{ data["saves"][s]["modifier"] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+</body>
+</html>

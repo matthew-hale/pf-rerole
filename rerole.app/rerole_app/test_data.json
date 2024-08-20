@@ -1,4 +1,5 @@
 {
+    "name": "Test Character Name",
     "abilities": {
         "strength": {
             "score": 15,

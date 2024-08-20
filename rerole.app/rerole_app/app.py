@@ -1,11 +1,5 @@
-import json
-
 from flask import Flask
+from rerole_app.site import site
 
 app = Flask(__name__)
-with open("test_data.json") as f:
-    data = json.load(f)
-
-@app.route("/")
-def index():
-    return data
+app.register_blueprint(site)

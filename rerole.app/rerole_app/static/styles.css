@@ -1,0 +1,21 @@
+body {
+    background-color: #180e0c;
+    color: #e5faff;
+}
+
+table, th, td {
+}
+
+table {
+    border-collapse: collapse;
+}
+
+#abilities {
+    width: 75%;
+    border: 3px solid #997caa;
+}
+
+#saves {
+    width: 75%;
+    border: 3px solid #c56867;
+}
