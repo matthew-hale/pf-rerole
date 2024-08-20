@@ -1,0 +1,119 @@
+{
+    "abilities": {
+        "strength": {
+            "score": 15,
+            "damage": 3,
+            "drain": 1
+        },
+        "dexterity": {
+            "score": 14
+        },
+        "constitution": {
+            "score": 13
+        },
+        "intelligence": {
+            "score": 12
+        },
+        "wisdom": {
+            "score": 11
+        },
+        "charisma": {
+            "score": 20
+        }
+    },
+    "saves": {
+        "fortitude": {
+            "value": 1,
+            "ability": "constitution"
+        },
+        "reflex": {
+            "value": 3,
+            "ability": "dexterity"
+        },
+        "will": {
+            "value": 6,
+            "ability": "wisdom"
+        }
+    },
+    "skills": {
+        "acrobatics": {
+            "ranks": 0,
+            "class": true,
+            "ability": "dexterity"
+        },
+        "climb": {
+            "ranks": 2,
+            "class": true,
+            "ability": "strength"
+        },
+        "knowledge (religion)": {
+            "ranks": 3,
+            "ability": "intelligence"
+        }
+    },
+    "spells": {
+        "mighty strength": {
+            "value": 8,
+            "type": "enhancement",
+            "magic": true,
+            "state": "active",
+            "affects": {
+                "group": "abilities",
+                "name": "strength"
+            }
+        },
+        "general skill buff": {
+            "value": 1,
+            "magic": true,
+            "state": "active",
+            "affects": {
+                "group": "skills"
+            }
+        }
+    },
+    "feats": {
+        "skill focus (acrobatics)": {
+            "value": 3,
+            "affects": {
+                "group": "skills",
+                "name": "acrobatics"
+            }
+        },
+        "iron will": {
+            "value": 2,
+            "affects": {
+                "group": "saves",
+                "name": "will"
+            }
+        }
+    },
+    "equipment": {
+        "belt of stronk": {
+            "description": "more stronk",
+            "value": 4,
+            "magic": true,
+            "type": "enhancement",
+            "affects": {
+                "group": "abilities",
+                "name": "strength"
+            }
+        },
+        "belt of dex": {
+            "description": "more dex",
+            "value": 6,
+            "magic": true,
+            "type": "enhancement",
+            "affects": {
+                "group": "abilities",
+                "name": "dexterity"
+            }
+        },
+        "cloak of resistance": {
+            "value": 1,
+            "type": "resistance",
+            "affects": {
+                "group": "saves"
+            }
+        }
+    }
+}
