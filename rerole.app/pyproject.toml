@@ -4,11 +4,12 @@ version = "0.0.0"
 description = ""
 authors = ["Matt Hale <matthew.hale@protonmail.com>"]
 readme = "readme.md"
-packages = [{include = "rerole"}]
+packages = [{include = "rerole_app"}]
 
 [tool.poetry.dependencies]
 python = "^3.12"
 flask = "^3.0.3"
+rerole-lib = "^0.3.0"
 
 
 [build-system]
