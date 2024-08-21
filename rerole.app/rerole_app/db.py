@@ -56,3 +56,24 @@ def create_character(username: str, data: dict) -> int:
         cid = res.fetchone()
         con.commit()
     return cid[0]
+
+def get_character(character_id: int) -> dict:
+    with get_con() as con:
+        cur = con.cursor()
+        res = cur.execute("SELECT data FROM character WHERE id=?", (character_id,))
+        data = res.fetchone()
+    if data is None:
+        return None
+    return json.loads(data[0])
+
+def update_character(character_id: int, data: dict):
+    name = data.get("name", "")
+    with get_con() as con:
+        cur = con.cursor()
+        res = cur.execute("UPDATE character SET name=?, data=? WHERE id=?", (name, json.dumps(data), character_id,))
+        con.commit()
+
+def delete_character(character_id: int):
+    with get_con() as con:
+        cur = con.cursor()
+        res = cur.execute("DELETE FROM character WHERE id=?", (character_id,))
