@@ -77,6 +77,7 @@ def delete_character(character_id: int):
     with get_con() as con:
         cur = con.cursor()
         res = cur.execute("DELETE FROM character WHERE id=?", (character_id,))
+        con.commit()
 
 def get_user_characters(username: str) -> list:
     with get_con() as con:
