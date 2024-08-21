@@ -91,8 +91,8 @@ def delete_all_sessions(username: str):
 def valid_session(username: str, token) -> bool:
     with get_con() as con:
         cur = con.cursor()
-        res = cur.execute("SELECT true FROM session WHERE user_id=(SELECT id FROM user WHERE username=?) AND token=()", (username, token,))
-        data = res.fechone()
+        res = cur.execute("SELECT true FROM session WHERE user_id=(SELECT id FROM user WHERE username=?) AND token=?", (username, token,))
+        data = res.fetchone()
     return bool(data)
 
 def create_character(username: str, data: dict) -> int:
