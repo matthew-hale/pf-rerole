@@ -28,20 +28,26 @@ OAUTH2_CONFIG = {
 
 @site.route("/")
 def index():
-    if "username" not in session:
+    valid_session = api.authenticated()
+    no_session = "username" not in session or "token" not in session
+    if not valid_session or no_session:
         return redirect(url_for("site.login"))
     refresh_session(session["username"], session["token"])
     character_list = api.get_characters()
-    return render_template("index.html", username=session["username"], data=character_list)
+    return render_template("index.html", data=character_list)
 
 @site.route("/character/<character_id>")
 def character(character_id: int):
+    valid_session = api.authenticated()
+    if not valid_session:
+        return redirect(url_for("site.login"))
     data = api.get_character(character_id)
     return render_template("character.html", data=data)
 
 @site.route("/login")
 def login():
-    if "username" in session:
+    valid_session = api.authenticated()
+    if valid_session:
         return redirect(url_for("site.index"))
     return render_template("login.html")
 
@@ -58,7 +64,8 @@ def logout():
 
 @site.route("/authorize/<provider>")
 def oauth2_authorize(provider):
-    if "username" in session:
+    valid_session = api.authenticated()
+    if valid_session:
         return redirect(url_for("site.index"))
 
     provider_data = OAUTH2_CONFIG.get(provider)
@@ -79,7 +86,8 @@ def oauth2_authorize(provider):
 
 @site.route("/callback/<provider>")
 def oauth2_callback(provider):
-    if "username" in session:
+    valid_session = api.authenticated()
+    if valid_session:
         return redirect(url_for("site.index"))
 
     provider_data = OAUTH2_CONFIG.get(provider)
