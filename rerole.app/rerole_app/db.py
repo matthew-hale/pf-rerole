@@ -77,3 +77,18 @@ def delete_character(character_id: int):
     with get_con() as con:
         cur = con.cursor()
         res = cur.execute("DELETE FROM character WHERE id=?", (character_id,))
+
+def get_user_characters(username: str) -> list:
+    with get_con() as con:
+        cur = con.cursor()
+        res = cur.execute("SELECT id, name FROM character WHERE user_id=(SELECT id FROM user WHERE username=?)", (username,))
+        data = res.fetchall()
+    if data is None:
+        return []
+
+    def tuple_to_dict(d):
+        return {
+            "id": d[0],
+            "name": d[1],
+        }
+    return list(map(tuple_to_dict, data))
