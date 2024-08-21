@@ -11,6 +11,14 @@ user_table = """CREATE TABLE IF NOT EXISTS user(
     username TEXT UNIQUE
 )"""
 
+session_table = """CREATE TABLE IF NOT EXISTS session(
+    id INTEGER PRIMARY KEY,
+    user_id INTEGER,
+    token TEXT,
+    last_used TEXT,
+    FOREIGN KEY(user_id) REFERENCES user(id)
+)"""
+
 character_table = """CREATE TABLE IF NOT EXISTS character(
     id INTEGER PRIMARY KEY,
     user_id INTEGER,
@@ -28,6 +36,7 @@ def init():
     with get_con() as con:
         cur = con.cursor()
         cur.execute(user_table)
+        cur.execute(session_table)
         cur.execute(character_table)
         con.commit()
 
@@ -47,6 +56,37 @@ def get_uid(username: str) -> int:
         data = res.fetchone()
         con.commit()
         return data[0]
+
+def refresh_session(username: str, token):
+    with get_con() as con:
+        cur = con.cursor()
+        res = cur.execute("SELECT id FROM session WHERE user_id=(SELECT id FROM user WHERE username=?) AND token=?", (username, token,))
+        data = res.fetchone()
+        if data is None:
+            res = cur.execute("INSERT INTO session (user_id, token, last_used) SELECT id, ?, datetime() FROM user WHERE username=?", (token, username,))
+            con.commit()
+            return
+        session_id = data[0]
+        res = cur.execute("UPDATE session SET last_used=datetime() WHERE id=?", (session_id,))
+        con.commit()
+
+def delete_session(username: str, token):
+    with get_con() as con:
+        cur = con.cursor()
+        res = cur.execute("DELETE FROM session WHERE user_id=(SELECT id FROM user WHERE username=?) AND token=?", (username, token,))
+        con.commit()
+
+def delete_all_sessions(username: str):
+    with get_con() as con:
+        cur = con.cursor()
+        res = cur.execute("DELETE FROM session WHERE user_id=(SELECT id FROM user WHERE username=?)", (username,))
+
+def valid_session(username: str, token) -> bool:
+    with get_con() as con:
+        cur = con.cursor()
+        res = cur.execute("SELECT true FROM session WHERE user_id=(SELECT id FROM user WHERE username=?) AND token=()", (username, token,))
+        data = res.fechone()
+    return bool(data)
 
 def create_character(username: str, data: dict) -> int:
     name = data.get("name", "")
