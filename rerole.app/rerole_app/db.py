@@ -93,3 +93,10 @@ def get_user_characters(username: str) -> list:
             "name": d[1],
         }
     return list(map(tuple_to_dict, data))
+
+def user_owns_character(username: str, character_id: int) -> bool:
+    with get_con() as con:
+        cur = con.cursor()
+        res = cur.execute("SELECT true FROM character WHERE id=? AND user_id=(SELECT id FROM user WHERE username=?)", (character_id, username,))
+        data = res.fetchone()
+    return bool(data)
