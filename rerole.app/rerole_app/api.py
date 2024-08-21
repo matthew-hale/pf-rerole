@@ -12,7 +12,8 @@ def get_characters():
 @api.route("/characters", methods=["POST"])
 def create_character():
     username = session["username"]
-    character_id = db.create_character(username, {})
+    data = character.calculate(character.new())
+    character_id = db.create_character(username, data)
     return {
         "id": character_id,
         "url": url_for("api.get_character", character_id=character_id),
