@@ -31,7 +31,10 @@ def init():
         con.commit()
 
 def get_uid(username: str) -> int:
-    """If a user is not currently in the database, this function will also insert it."""
+    """Get the id of the given username.
+
+    If the provided username does not exist in the database, this function will also insert it.
+    """
     with get_con() as con:
         cur = con.cursor()
         res = cur.execute("SELECT id FROM user WHERE username=?", (username,))
