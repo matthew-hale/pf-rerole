@@ -40,6 +40,13 @@ def init():
         cur.execute(character_table)
         con.commit()
 
+def user_exists(username: str) -> bool:
+    with get_con() as con:
+        cur = con.cursor()
+        res = cur.execute("SELECT true FROM user WHERE username=?", (username,))
+        data = res.fetchone()
+    return bool(data)
+
 def get_uid(username: str) -> int:
     """Get the id of the given username.
 
