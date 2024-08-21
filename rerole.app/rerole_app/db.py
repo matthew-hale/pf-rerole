@@ -8,7 +8,7 @@ DB_PATH = DATA_DIR + DB_NAME
 
 user_table = """CREATE TABLE IF NOT EXISTS user(
     id INTEGER PRIMARY KEY,
-    username TEXT
+    username TEXT UNIQUE
 )"""
 
 character_table = """CREATE TABLE IF NOT EXISTS character(
