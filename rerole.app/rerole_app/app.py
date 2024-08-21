@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, session
 
 from rerole_app.api import api
 from rerole_app.db import init
@@ -9,5 +9,7 @@ app.register_blueprint(site)
 app.register_blueprint(api)
 
 app.json.sort_keys = False
+
+app.secret_key = "dev key"
 
 init()
