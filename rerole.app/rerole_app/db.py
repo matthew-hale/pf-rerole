@@ -42,8 +42,7 @@ def get_uid(username: str) -> int:
         if data:
             return data[0]
 
-        cur.execute("INSERT INTO user (username) VALUES (?)", (username,))
-        con.commit()
-        res = cur.execute("SELECT id FROM user WHERE username=?", (username,))
+        res = cur.execute("INSERT INTO user (username) VALUES (?) RETURNING id", (username,))
         data = res.fetchone()
+        con.commit()
         return data[0]
