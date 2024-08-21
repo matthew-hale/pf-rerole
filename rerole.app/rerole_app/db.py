@@ -1,3 +1,4 @@
+import json
 import os
 import sqlite3
 
@@ -47,10 +48,11 @@ def get_uid(username: str) -> int:
         con.commit()
         return data[0]
 
-def create_character(username: str, name: str, data: str) -> int:
+def create_character(username: str, data: dict) -> int:
+    name = data.get("name", "")
     with get_con() as con:
         cur = con.cursor()
-        res = cur.execute("INSERT INTO character (user_id, name, data) SELECT user.id, ?, ? FROM user WHERE username=? RETURNING id", (name, data, username,))
+        res = cur.execute("INSERT INTO character (user_id, name, data) SELECT user.id, ?, ? FROM user WHERE username=? RETURNING id", (name, json.dumps(data), username,))
         cid = res.fetchone()
         con.commit()
     return cid[0]
