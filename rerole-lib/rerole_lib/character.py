@@ -6,6 +6,51 @@ from rerole_lib import save
 from rerole_lib import skill
 from rerole_lib import utils
 
+def new() -> dict:
+    """Create a new blank character sheet"""
+    return {
+        "name": "",
+        "abilities": {
+            "strength": {
+                "score": 10,
+            },
+            "dexterity": {
+                "score": 10,
+            },
+            "constitution": {
+                "score": 10,
+            },
+            "intelligence": {
+                "score": 10,
+            },
+            "wisdom": {
+                "score": 10,
+            },
+            "charisma": {
+                "score": 10,
+            },
+        },
+        "saves": {
+            "fortitude": {
+                "value": 0,
+                "ability": "constitution",
+            },
+            "reflex": {
+                "value": 0,
+                "ability": "dexterity",
+            },
+            "will": {
+                "value": 0,
+                "ability": "wisdom",
+            },
+        },
+        "skills": {},
+        "feats": {},
+        "traits": {},
+        "special abilities": {},
+        "equipment": {},
+    }
+
 def calculate(data: dict) -> dict:
     """Calulate all relevant modifiers, returning a new dict."""
     data = update_effect_index(data)
