@@ -42,6 +42,18 @@ def delete_character(character_id: int):
     db.delete_character(character_id)
     return {}, 204
 
+@api.route("/characters/<character_id>/calculate", methods=["POST"])
+def calculate(character_id: int):
+    username = session["username"]
+    ensure_authorized_access(username, character_id)
+    data = db.get_character(character_id)
+    data = character.calculate(data)
+    db.update_character(character_id, data)
+    return {
+        "id": character_id,
+        "url": url_for("api.get_character", character_id=character_id),
+    }, 200
+
 @api.errorhandler(401)
 def handle_401(error):
     return {"message": "Unauthorized access denied"}, 401
