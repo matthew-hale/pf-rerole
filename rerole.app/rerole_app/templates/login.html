@@ -6,9 +6,6 @@
 </head>
 
 <body>
-<div id="header">
-    <h1>Welcome {{ username }}</h1>
-    <h2>Characters:</h2>
-</div>
+    <a href="{{ url_for('site.oauth2_authorize', provider='github') }}">Login with GitHub</a>
 </body>
 </html>

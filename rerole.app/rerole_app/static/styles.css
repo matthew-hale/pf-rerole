@@ -6,6 +6,10 @@ body {
 table, th, td {
 }
 
+a {
+    color: #91acc5;
+}
+
 table {
     border-collapse: collapse;
 }
