@@ -14,12 +14,23 @@ table {
     border-collapse: collapse;
 }
 
+#header {
+}
+
+#buttons {
+    width: 25%;
+    float: right;
+}
+
+#character-list {
+}
+
 #abilities {
-    width: 75%;
+    width: 60%;
     border: 3px solid #997caa;
 }
 
 #saves {
-    width: 75%;
+    width: 60%;
     border: 3px solid #c56867;
 }

@@ -10,5 +10,17 @@
     <h1>Welcome {{ username }}</h1>
     <h2>Characters:</h2>
 </div>
+<div id="buttons">
+    <a href="{{ url_for('site.logout') }}">Logout</a>
+</div>
+<div id="character-list">
+    <ul>
+        {% for c in data %}
+        <li>
+            <a href="{{ url_for('site.character', character_id=c['id']) }}">name: {{ c['name'] }}</a>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
 </body>
 </html>

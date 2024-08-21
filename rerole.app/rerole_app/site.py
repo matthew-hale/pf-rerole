@@ -6,6 +6,7 @@ import requests
 from flask import Blueprint, abort, redirect, render_template, request, session, url_for
 
 from rerole_app.db import delete_session, refresh_session
+from rerole_app import api
 
 from rerole_lib import character as c
 
@@ -30,7 +31,13 @@ def index():
     if "username" not in session:
         return redirect(url_for("site.login"))
     refresh_session(session["username"], session["token"])
-    return render_template("index.html", username=session["username"])
+    character_list = api.get_characters()
+    return render_template("index.html", username=session["username"], data=character_list)
+
+@site.route("/character/<character_id>")
+def character(character_id: int):
+    data = api.get_character(character_id)
+    return render_template("character.html", data=data)
 
 @site.route("/login")
 def login():
