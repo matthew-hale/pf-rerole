@@ -34,7 +34,12 @@ def update_character(character_id: int):
     ensure_authorized_access(username, character_id)
     data = request.json
     if data is None:
-        return {"message": "Cannot create character with empty request body"}, 401
+        return {"message": "Cannot update character with empty request body"}, 401
+    db.update_character(character_id, data)
+    return {
+        "id": character_id,
+        "url": url_for("api.get_character", character_id=character_id)
+    }, 200
 
 @api.route("/characters/<character_id>", methods=["DELETE"])
 def delete_character(character_id: int):
