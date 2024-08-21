@@ -5,6 +5,11 @@ from rerole_app import db
 
 api = Blueprint("api", __name__, url_prefix = "/api/v0")
 
+@api.before_request
+def before_request():
+    if "username" not in session:
+        return {"message": "Not authenticated"}, 401
+
 @api.route("/characters", methods=["GET"])
 def get_characters():
     return db.get_user_characters(session["username"])
@@ -21,8 +26,7 @@ def create_character():
 
 @api.route("/characters/<character_id>", methods=["GET"])
 def get_character(character_id: int):
-    username = session["username"]
-    ensure_authorized_access(username, character_id)
+    ensure_authorized_access(character_id)
     data = db.get_character(character_id)
     if data is None:
         abort(404)
@@ -30,8 +34,7 @@ def get_character(character_id: int):
 
 @api.route("/characters/<character_id>", methods=["PUT"])
 def update_character(character_id: int):
-    username = session["username"]
-    ensure_authorized_access(username, character_id)
+    ensure_authorized_access(character_id)
     data = request.json
     if data is None:
         return {"message": "Cannot update character with empty request body"}, 401
@@ -43,15 +46,13 @@ def update_character(character_id: int):
 
 @api.route("/characters/<character_id>", methods=["DELETE"])
 def delete_character(character_id: int):
-    username = session["username"]
-    ensure_authorized_access(username, character_id)
+    ensure_authorized_access(character_id)
     db.delete_character(character_id)
     return {}, 204
 
 @api.route("/characters/<character_id>/calculate", methods=["POST"])
 def calculate(character_id: int):
-    username = session["username"]
-    ensure_authorized_access(username, character_id)
+    ensure_authorized_access(character_id)
     data = db.get_character(character_id)
     data = character.calculate(data)
     db.update_character(character_id, data)
@@ -64,7 +65,12 @@ def calculate(character_id: int):
 def handle_401(error):
     return {"message": "Unauthorized access denied"}, 401
 
-def ensure_authorized_access(username: str, character_id: int):
-    authorized = db.user_owns_character(username, character_id)
+def ensure_authorized_access(character_id: int):
+    username = session.get("username")
+    token = session.get("token")
+    valid_session = db.valid_session(username, token)
+    user_owns_character = db.user_owns_character(username, character_id)
+
+    authorized = valid_session and user_owns_character
     if not authorized:
         abort(401)
