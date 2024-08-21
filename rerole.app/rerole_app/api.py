@@ -65,10 +65,14 @@ def calculate(character_id: int):
 def handle_401(error):
     return {"message": "Unauthorized access denied"}, 401
 
-def ensure_authorized_access(character_id: int):
+def authenticated() -> bool:
     username = session.get("username")
     token = session.get("token")
-    valid_session = db.valid_session(username, token)
+    return db.valid_session(username, token)
+
+def ensure_authorized_access(character_id: int):
+    username = session.get("username")
+    valid_session = authenticated()
     user_owns_character = db.user_owns_character(username, character_id)
 
     authorized = valid_session and user_owns_character
