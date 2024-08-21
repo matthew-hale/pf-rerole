@@ -299,13 +299,13 @@ use-chardet-on-py3 = ["chardet (>=3.0.2,<6)"]
 
 [[package]]
 name = "rerole-lib"
-version = "0.3.0"
+version = "0.3.1"
 description = "A library for interacting with Pathfinder 1E character sheet data."
 optional = false
 python-versions = "<4.0,>=3.12"
 files = [
-    {file = "rerole_lib-0.3.0-py3-none-any.whl", hash = "sha256:618dc64ef4c0b702ceaade26f8972708b650051a50a4346fb59e8fe20e3ce270"},
-    {file = "rerole_lib-0.3.0.tar.gz", hash = "sha256:3e40153f7cb57173e668e9cc857aea98dbbc2ed914b0477d39334292aab163e0"},
+    {file = "rerole_lib-0.3.1-py3-none-any.whl", hash = "sha256:db341e7a199fa280fa1d52c87f9129ad9561d1b9f02ed00a5d302d52ed83e559"},
+    {file = "rerole_lib-0.3.1.tar.gz", hash = "sha256:2d1af0db1080b5660cfd06a54075ac74903c70391837bac39a3934f4e0b6c31d"},
 ]
 
 [[package]]
