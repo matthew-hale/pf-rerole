@@ -2,7 +2,7 @@ body {
     font-family: Georgia, serif;
     background-color: #180e0c;
     color: #e5faff;
-    font-size: 1.1em;
+    font-size: 1.2em;
 }
 
 #main-wrapper {
@@ -32,7 +32,7 @@ a:active {
     display: inline-block;
     font: bold;
     font-family: Georgia, serif;
-    font-size: 1rem;
+    font-size: 1em;
     color: #180e0c;
     border: none;
     border-radius: 4px;
