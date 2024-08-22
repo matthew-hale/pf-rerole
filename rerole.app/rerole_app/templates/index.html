@@ -3,6 +3,7 @@
 <head>
     <title>Rerole</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}"/>
+    <script async src="{{ url_for('static', filename='index.js') }}"></script>
 </head>
 
 <body>
@@ -17,14 +18,6 @@
 
 <div id="character-list">
     <h2>Characters</h2>
-    {% for c in data %}
-    <div class="description">
-        <h3>{{ c['name'] if c['name'] != '' else 'Unnamed'}}</h3>
-    </div>
-    <div class="buttons">
-        <a href="{{ url_for('site.character', character_id=c['id']) }}">View</a>
-    </div>
-    {% endfor %}
 </div>
 
 </div>
