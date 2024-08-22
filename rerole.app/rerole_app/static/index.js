@@ -38,11 +38,9 @@ async function populate_list() {
             dom_character_list.appendChild(c_div);
         }
     } catch (error) {
-        const error_message = document.createElement("p");
-        error_message.innerHTML = "An error occurred while fetching your list of characters.";
-        dom_character_list.appendChild(error_message);
+        alert("An error occurred while fetching your list of characters.");
         console.error(error);
-        return
+        window.location.reload();
     }
 }
 
@@ -78,6 +76,7 @@ async function create_character() {
     } catch (error) {
         alert("An error occurred while creating a new character.");
         console.error(error);
+        window.location.reload();
     }
 }
 
