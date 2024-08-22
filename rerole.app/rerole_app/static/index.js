@@ -40,6 +40,20 @@ async function populate_list() {
     }
 }
 
+async function create_character() {
+    try {
+        const response = await fetch(`${base_api_url}/characters`, {
+            method: "POST",
+            credentials: "same-origin"
+        });
+        data = await response.json();
+        window.location.href = `${site_characters_url}/${data.id}`;
+    } catch (error) {
+        alert("An error occurred while creating a new character.");
+        console.error(error);
+    }
+}
+
 async function get_character_list() {
     const endpoint = `${base_api_url}/characters`;
     const response = await fetch(endpoint, {

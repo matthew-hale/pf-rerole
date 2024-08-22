@@ -27,7 +27,7 @@ a:active {
     color: #00f8fa;
 }
 
-.buttons a, input[type=button] {
+.buttons a, input[type=button], button {
     width: 100px;
     display: inline-block;
     font: bold;
@@ -42,6 +42,7 @@ a:active {
     padding: 3px 8px 3px 8px;
     margin-left: 25px;
     margin-right: 25px;
+    cursor: pointer;
 }
 
 .ability {
