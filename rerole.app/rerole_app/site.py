@@ -36,7 +36,7 @@ def index():
     character_list = api.get_characters()
     return render_template("index.html", data=character_list)
 
-@site.route("/character/<character_id>")
+@site.route("/characters/<character_id>")
 def character(character_id: int):
     valid_session = api.authenticated()
     if not valid_session:
