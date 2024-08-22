@@ -15,6 +15,7 @@ async function populate_list() {
 
             c_div = document.createElement("div");
             c_div.setAttribute("class", "character");
+            c_div.setAttribute("id", id);
 
             p = document.createElement("p");
             p.innerHTML = name;
@@ -29,6 +30,11 @@ async function populate_list() {
             link.innerHTML = "View";
             buttons.appendChild(link);
 
+            delete_button = document.createElement("button");
+            delete_button.setAttribute("onclick", "delete_character(this)");
+            delete_button.innerHTML = "Delete";
+            buttons.appendChild(delete_button);
+
             dom_character_list.appendChild(c_div);
         }
     } catch (error) {
@@ -37,6 +43,27 @@ async function populate_list() {
         dom_character_list.appendChild(error_message);
         console.error(error);
         return
+    }
+}
+
+async function delete_character(obj) {
+    const buttons = obj.parentNode;
+    const c_div = buttons.parentNode;
+    const id = c_div.getAttribute("id");
+    if (!confirm("Are you sure you wish to delete this character? This action cannot be undone.")) {
+        return
+    }
+    try {
+        const response = await fetch(`${base_api_url}/characters/${id}`, {
+            method: "DELETE",
+            credentials: "same-origin"
+        });
+        if (response.ok) {
+            c_div.remove();
+        }
+    } catch (error) {
+        alert("An error occurred while deleting your character.");
+        console.error(error);
     }
 }
 
