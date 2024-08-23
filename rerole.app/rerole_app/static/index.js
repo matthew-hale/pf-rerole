@@ -13,15 +13,15 @@ async function populate_list() {
         console.log("success");
         for (const c of character_list) {
             let id = c.id;
-            let name = c.name ? c.name : "Unnamed"; 
+            let name = c.name ? c.name : "Unnamed character";
 
             let c_div = document.createElement("div");
             c_div.setAttribute("class", "character");
             c_div.setAttribute("id", id);
 
-            let p = document.createElement("p");
-            p.innerHTML = name;
-            c_div.appendChild(p);
+            let h3 = document.createElement("h3");
+            h3.innerHTML = name;
+            c_div.appendChild(h3);
 
             let buttons = document.createElement("div");
             buttons.setAttribute("class", "buttons");
