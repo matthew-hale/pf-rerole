@@ -6,11 +6,19 @@
 </head>
 
 <body>
-<div id="header">
+<div class="main-wrapper">
+
+<div class="header">
     <p>To contribute, visit <a href="https://github.com/matthew-hale/pf-rerole">the pf-rerole project on GitHub</a></p>
+</div>
+
+<div class="login">
+    <h2>Login</h2>
     <div class="buttons">
-        <a href="{{ url_for('site.oauth2_authorize', provider='github') }}">Login with GitHub</a>
+        <a href="{{ url_for('site.oauth2_authorize', provider='github') }}"><img src="https://github.com/favicon.ico"></img> GitHub</a>
     </div>
+</div>
+
 </div>
 </body>
 </html>
