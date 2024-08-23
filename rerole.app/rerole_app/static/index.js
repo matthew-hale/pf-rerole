@@ -32,7 +32,7 @@ async function populate_list() {
             link.innerHTML = "View";
             buttons.appendChild(link);
 
-            let delete_button = document.createElement("button");
+            let delete_button = document.createElement("span");
             delete_button.setAttribute("onclick", "delete_character(this)");
             delete_button.innerHTML = "Delete";
             buttons.appendChild(delete_button);
