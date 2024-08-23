@@ -1,3 +1,5 @@
+"use strict";
+
 var hostname = "http://localhost:5000";
 var base_api_url = `${hostname}/api/v0`;
 var site_characters_url = `${hostname}/characters`;
@@ -5,32 +7,32 @@ var site_characters_url = `${hostname}/characters`;
 window.onload = populate_list;
 
 async function populate_list() {
-    dom_character_list = document.getElementById("character-list");
+    const dom_character_list = document.getElementById("character-list");
     try {
         const character_list = await get_character_list();
         console.log("success");
         for (const c of character_list) {
-            id = c.id;
-            name = c.name ? c.name : "Unnamed"; 
+            let id = c.id;
+            let name = c.name ? c.name : "Unnamed"; 
 
-            c_div = document.createElement("div");
+            let c_div = document.createElement("div");
             c_div.setAttribute("class", "character");
             c_div.setAttribute("id", id);
 
-            p = document.createElement("p");
+            let p = document.createElement("p");
             p.innerHTML = name;
             c_div.appendChild(p);
 
-            buttons = document.createElement("div");
+            let buttons = document.createElement("div");
             buttons.setAttribute("class", "buttons");
             c_div.appendChild(buttons);
 
-            link = document.createElement("a");
+            let link = document.createElement("a");
             link.setAttribute("href", `${site_characters_url}/${id}`);
             link.innerHTML = "View";
             buttons.appendChild(link);
 
-            delete_button = document.createElement("button");
+            let delete_button = document.createElement("button");
             delete_button.setAttribute("onclick", "delete_character(this)");
             delete_button.innerHTML = "Delete";
             buttons.appendChild(delete_button);
@@ -71,7 +73,7 @@ async function create_character() {
             method: "POST",
             credentials: "same-origin"
         });
-        data = await response.json();
+        const data = await response.json();
         window.location.href = `${site_characters_url}/${data.id}`;
     } catch (error) {
         alert("An error occurred while creating a new character.");
