@@ -1,4 +1,4 @@
-from flask import Blueprint, request, session, url_for, abort
+from flask import Blueprint, jsonify, request, session, url_for, abort
 
 from rerole_lib import character
 from rerole_app import db
@@ -12,17 +12,17 @@ def before_request():
 
 @api.route("/characters", methods=["GET"])
 def get_characters():
-    return db.get_user_characters(session["username"])
+    return jsonify(db.get_user_characters(session["username"]))
 
 @api.route("/characters", methods=["POST"])
 def create_character():
     username = session["username"]
     data = character.calculate(character.new())
     character_id = db.create_character(username, data)
-    return {
+    return jsonify({
         "id": character_id,
         "url": url_for("api.get_character", character_id=character_id),
-    }, 201
+    }), 201
 
 @api.route("/characters/<character_id>", methods=["GET"])
 def get_character(character_id: int):
@@ -30,7 +30,7 @@ def get_character(character_id: int):
     data = db.get_character(character_id)
     if data is None:
         abort(404)
-    return data
+    return jsonify(data)
 
 @api.route("/characters/<character_id>", methods=["PUT"])
 def update_character(character_id: int):
@@ -39,10 +39,10 @@ def update_character(character_id: int):
     if data is None:
         return {"message": "Cannot update character with empty request body"}, 401
     db.update_character(character_id, data)
-    return {
+    return jsonify({
         "id": character_id,
         "url": url_for("api.get_character", character_id=character_id)
-    }, 200
+    }), 200
 
 @api.route("/characters/<character_id>", methods=["DELETE"])
 def delete_character(character_id: int):
@@ -56,10 +56,10 @@ def calculate(character_id: int):
     data = db.get_character(character_id)
     data = character.calculate(data)
     db.update_character(character_id, data)
-    return {
+    return jsonify({
         "id": character_id,
         "url": url_for("api.get_character", character_id=character_id),
-    }, 200
+    }), 200
 
 @api.errorhandler(401)
 def handle_401(error):
