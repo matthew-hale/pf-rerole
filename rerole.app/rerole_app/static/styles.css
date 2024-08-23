@@ -1,7 +1,7 @@
 :root {
     --black: #180e0c;
     --orange: #cb8b69;
-    --red: #c56867;
+    --red: #bf4645;
     --green: #82bf65;
     --yellow: #c6bc5d;
     --blue: #91acc5;
@@ -9,6 +9,7 @@
     --cyan: #00dbf4;
     --white: #e5faff;
 
+    --bright-red: #c56867;
     --bright-green: #a0eb7c;
     --bright-yellow: #fbec64;
     --bright-blue: #9eb6d4;
@@ -94,6 +95,14 @@ a:active {
 
 .buttons :hover {
     background-color: var(--bright-blue);
+}
+
+.delete {
+    background-color: var(--bright-red);
+}
+
+.delete:hover {
+    background-color: var(--red);
 }
 
 .ability {
