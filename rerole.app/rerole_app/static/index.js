@@ -34,6 +34,7 @@ async function populate_list() {
 
             let delete_button = document.createElement("span");
             delete_button.setAttribute("onclick", "delete_character(this)");
+            delete_button.setAttribute("class", "delete");
             delete_button.innerHTML = "Delete";
             buttons.appendChild(delete_button);
 
