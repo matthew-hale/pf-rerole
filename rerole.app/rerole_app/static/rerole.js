@@ -86,7 +86,6 @@ var M = {
 }
 
 var V = {
-    name: document.getElementById("name"),
     abilities: {},
     saves: {},
 }
@@ -102,14 +101,23 @@ var C = {
 function initialize_view(model, view) {
     const data = model.getData();
 
+    const general = document.getElementById("general");
+    let label = document.createElement("label");
+    label.setAttribute("for", "name");
+    label.innerHTML = "Name:";
+    general.appendChild(label);
+
+    view.name = document.createElement("input");
+    view.name.setAttribute("id", "name");
+    view.name.setAttribute("type", "text");
     view.name.addEventListener("change", function() {
         let data = model.getData();
         let name = view.name.value;
         data.name = name;
         model.setData(data);
     })
+    general.appendChild(view.name);
 
-    let label;
     for (const ability of Object.keys(data.abilities)) {
         const abilities = document.getElementById("abilities");
         let a = document.createElement("div");
