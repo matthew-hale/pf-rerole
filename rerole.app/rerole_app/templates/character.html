@@ -3,78 +3,53 @@
 <head>
     <title>Rerole</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}"/>
+    <script>
+        var C_ID = "{{ character_id }}";
+    </script>
+    <script defer src="{{ url_for('static', filename='rerole.js') }}"></script>
 </head>
 
 <body>
 <div class="main-wrapper">
-
-<div class="header">
-    <p>To contribute, visit <a href="https://github.com/matthew-hale/pf-rerole">the pf-rerole project on GitHub</a></p>
-    <div class="buttons">
-        <a href="{{ url_for('site.index') }}">Home</a>
-        <a href="{{ url_for('site.logout') }}">Logout</a>
+    <div class="header">
+        <p>To contribute, visit <a href="https://github.com/matthew-hale/pf-rerole">the pf-rerole project on GitHub</a></p>
+        <div class="buttons">
+            <a href="{{ url_for('site.index') }}">Home</a>
+            <a href="{{ url_for('site.logout') }}">Logout</a>
+        </div>
     </div>
 </div>
 
-<form name="character-sheet">
-    <div id="info">
-        <label>Name</label><input type="text" id="name">
-    </div>
-
+<form id="form">
+<div id="character-sheet">
     <div id="abilities">
-        <h2>abilities</h2>
-        {% for a in data["abilities"] %}
         <div class="ability">
-            <h3>{{ a }}</h3>
-            <div class="section">
-                <label>score</label>
-                <input type="text" id="{{ a }}.score">
-            </div>
-            <div class="section">
-                <label>modified score</label>
-                <input type="text" id="{{ a }}.modified_score" disabled>
-            </div>
-            <div class="section">
-                <label>modifier</label>
-                <input type="text" id="{{ a }}.modifier" disabled>
-            </div>
+            <label for="abilities.strength.score">Strength</label>
+            <input type="text" id="abilities.strength.score"/>
+            <label for="abilities.strength.modified_score">Modified Score:</label>
+            <p id="abilities.strength.modified_score"></p>
+            <label for="abilities.strength.modifier">Modifier:</label>
+            <p id="abilities.strength.modifier"></p>
         </div>
-        {% endfor %}
+        <div class="ability">
+            <label for="abilities.dexterity.score">Dexterity</label>
+            <input type="text" id="abilities.dexterity.score"/>
+            <label for="abilities.dexterity.modified_score">Modified Score:</label>
+            <p id="abilities.dexterity.modified_score"></p>
+            <label for="abilities.dexterity.modifier">Modifier:</label>
+            <p id="abilities.dexterity.modifier"></p>
+        </div>
     </div>
-
     <div id="saves">
-        <h2>saves</h2>
-        {% for s in data["saves"] %}
         <div class="save">
-            <h3>{{ s }}</h3>
-            <p>{{ data["saves"][s]["ability"] }}</p>
-            <br>
-            <div class="section">
-                <label>base value</label>
-                <input type="text" id="{{ s }}.value">
-            </div>
-            <div class="section">
-                <label>total</label>
-                <input type="text" id="{{ s }}.modifier" disabled>
-            </div>
+            <label for="saves.reflex.value">Reflex</label>
+            <input type="text" id="saves.reflex.value"/>
+            <label for="saves.reflex.modifier">Modifier:</label>
+            <p id="saves.reflex.modifier"></p>
         </div>
-        {% endfor %}
     </div>
+</div>
 </form>
 
-<script type="text/javascript">
-    document.getElementById("name").value = "{{ data['name'] }}";
-    {% for a in data["abilities"] %}
-    document.getElementById("{{ a }}.score").value = "{{ data['abilities'][a]['score'] }}";
-    document.getElementById("{{ a }}.modified_score").value = "{{ data['abilities'][a]['modified_score'] }}";
-    document.getElementById("{{ a }}.modifier").value = "{{ data['abilities'][a]['modifier'] }}";
-    {% endfor %}
-
-    {% for s in data["saves"] %}
-    document.getElementById("{{ s }}.value").value = "{{ data['saves'][s]['value'] }}";
-    document.getElementById("{{ s }}.modifier").value = "{{ data['saves'][s]['modifier'] }}";
-    {% endfor %}
-</script>
-</div>
 </body>
 </html>

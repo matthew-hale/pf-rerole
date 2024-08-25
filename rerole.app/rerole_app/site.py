@@ -41,8 +41,7 @@ def character(character_id: int):
     valid_session = api.authenticated()
     if not valid_session:
         return redirect(url_for("site.login"))
-    data = api.get_character(character_id)
-    return render_template("character.html", data=data)
+    return render_template("character.html", character_id=character_id)
 
 @site.route("/login")
 def login():

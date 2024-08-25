@@ -57,6 +57,23 @@ body {
     padding-bottom: 25px;
 }
 
+#character-sheet {
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: var(--bright-white);
+    border: 4px solid var(--blue);
+    border-radius: 10px;
+}
+
+.ability p {
+    display: inline-block;
+}
+
+.save p {
+    display: inline-block;
+}
+
 :is(h1, h2, h3, h4, h5, h6) {
     font-weight: normal;
     margin: 10px, 0, 10px, 0;
@@ -105,64 +122,4 @@ a:active {
 
 .delete:hover {
     background-color: var(--red);
-}
-
-.ability {
-    display: inline-block;
-    width: 49%;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.ability .section {
-    display: inline-block;
-    vertical-align: top;
-    width: 32%;
-}
-
-.save {
-    display: inline-block;
-    width: 32%;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.save .section {
-    display: inline-block;
-    vertical-align: top;
-    width: 49%;
-}
-
-input {
-    background-color: var(--white);
-}
-
-input[disabled] {
-    background-color: var(--bright-cyan);
-}
-
-input, label {
-    display: block;
-}
-
-.ability input {
-    width: 50px;
-}
-
-.save input {
-    width: 50px;
-}
-
-.save h3, p {
-    display: inline-block;
-    margin-left: 5px;
-    margin-right: 5px;
-}
-
-.abilities {
-    margin: none;
-}
-
-.saves {
-    margin: none;
 }
