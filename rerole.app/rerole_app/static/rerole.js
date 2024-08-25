@@ -109,15 +109,49 @@ function initialize_view(model, view) {
         model.setData(data);
     })
 
+    let label;
     for (const ability of Object.keys(data.abilities)) {
-        view.abilities[ability] = {
-            score: document.getElementById(`abilities.${ability}.score`),
-            modified_score: document.getElementById(`abilities.${ability}.modified_score`),
-            modifier: document.getElementById(`abilities.${ability}.modifier`)
-        }
-        view.abilities[ability].score.addEventListener("change", function() {
+        const abilities = document.getElementById("abilities");
+        let a = document.createElement("div");
+        a.setAttribute("class", "ability");
+        abilities.appendChild(a);
+
+        label = document.createElement("label");
+        label.setAttribute("for", `abilities.${ability}.score`);
+        label.innerHTML = ability;
+        a.appendChild(label);
+
+        let score = document.createElement("input");
+        score.setAttribute("id", `abilities.${ability}.score`);
+        score.setAttribute("type", "text");
+        score.addEventListener("change", function() {
             update_model_ability(model, view, ability);
         });
+        a.appendChild(score);
+
+        label = document.createElement("label");
+        label.setAttribute("for", `abilities.${ability}.modified_score`);
+        label.innerHTML = "Modified score:";
+        a.appendChild(label);
+
+        let modified_score = document.createElement("p");
+        modified_score.setAttribute("id", `abilities.${ability}.modified_score`);
+        a.appendChild(modified_score);
+
+        label = document.createElement("label");
+        label.setAttribute("for", `abilities.${ability}.modifier`);
+        label.innerHTML = "Modifier:";
+        a.appendChild(label);
+
+        let modifier = document.createElement("p");
+        modifier.setAttribute("id", `abilities.${ability}.modifier`);
+        a.appendChild(modifier);
+
+        view.abilities[ability] = {
+            score: score,
+            modified_score: modified_score,
+            modifier: modifier
+        }
     }
     for (const save of Object.keys(data.saves)) {
         view.saves[save] = {
