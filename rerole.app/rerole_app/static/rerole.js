@@ -163,10 +163,10 @@ function redirect_to_login() {
 }
 
 window.onload = function() {
+    initialize_view_listeners(V);
     get_character()
         .then((data) => {
             M.data = data;
-            initialize_view_listeners(V);
             C.handler.call(C);
         });
 }
