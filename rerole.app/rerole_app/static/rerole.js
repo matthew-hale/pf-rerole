@@ -101,8 +101,14 @@ var C = {
 function initialize_view(model, view) {
     const data = model.getData();
 
+    let label;
+    let score;
+    let modified_score;
+    let modifier;
+    let value;
+
     const general = document.getElementById("general");
-    let label = document.createElement("label");
+    label = document.createElement("label");
     label.setAttribute("for", "name");
     label.innerHTML = "Name:";
     general.appendChild(label);
@@ -129,7 +135,7 @@ function initialize_view(model, view) {
         label.innerHTML = ability;
         a.appendChild(label);
 
-        let score = document.createElement("input");
+        score = document.createElement("input");
         score.setAttribute("id", `abilities.${ability}.score`);
         score.setAttribute("type", "text");
         score.addEventListener("change", function() {
@@ -142,7 +148,7 @@ function initialize_view(model, view) {
         label.innerHTML = "Modified score:";
         a.appendChild(label);
 
-        let modified_score = document.createElement("p");
+        modified_score = document.createElement("p");
         modified_score.setAttribute("id", `abilities.${ability}.modified_score`);
         a.appendChild(modified_score);
 
@@ -151,7 +157,7 @@ function initialize_view(model, view) {
         label.innerHTML = "Modifier:";
         a.appendChild(label);
 
-        let modifier = document.createElement("p");
+        modifier = document.createElement("p");
         modifier.setAttribute("id", `abilities.${ability}.modifier`);
         a.appendChild(modifier);
 
@@ -162,13 +168,37 @@ function initialize_view(model, view) {
         }
     }
     for (const save of Object.keys(data.saves)) {
-        view.saves[save] = {
-            value: document.getElementById(`saves.${save}.value`),
-            modifier: document.getElementById(`saves.${save}.modifier`)
-        }
-        view.saves[save].value.addEventListener("change", function() {
+        const saves = document.getElementById("saves");
+        let s = document.createElement("div");
+        s.setAttribute("class", "save");
+        saves.appendChild(s);
+
+        label = document.createElement("label");
+        label.setAttribute("for", `saves.${save}.value`);
+        label.innerHTML = save;
+        s.appendChild(label);
+
+        value = document.createElement("input");
+        value.setAttribute("id", `saves.${save}.value`);
+        value.setAttribute("type", "text");
+        value.addEventListener("change", function() {
             update_model_save(model, view, save);
         });
+        s.appendChild(value);
+
+        label = document.createElement("label");
+        label.setAttribute("for", `saves.${save}.modifier`);
+        label.innerHTML = "Modifier:";
+        s.appendChild(label);
+
+        modifier = document.createElement("p");
+        modifier.setAttribute("id", `saves.${save}.modifier`);
+        s.appendChild(modifier);
+
+        view.saves[save] = {
+            value: value,
+            modifier: modifier
+        }
     }
 
     view.update = function(model) {
