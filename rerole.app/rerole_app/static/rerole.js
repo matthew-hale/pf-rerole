@@ -86,6 +86,7 @@ var M = {
 }
 
 var V = {
+    name: document.getElementById("name"),
     abilities: {
         strength: {
             score: document.getElementById("abilities.strength.score"),
@@ -134,6 +135,8 @@ var V = {
     },
     update: function(M) {
         let data = M.getData();
+        this.name.value = data.name;
+
         this.abilities.strength.score.value = data.abilities.strength.score;
         this.abilities.strength.modified_score.innerHTML = data.abilities.strength.modified_score;
         this.abilities.strength.modifier.innerHTML = data.abilities.strength.modifier;
@@ -193,6 +196,13 @@ function update_model_save(m, v, save_name) {
 }
 
 function initialize_view_listeners(model, view) {
+    view.name.addEventListener("change", function() {
+        let data = model.getData();
+        let name = view.name.value;
+        data.name = name;
+        model.setData(data);
+    })
+
     view.abilities.strength.score.addEventListener("change", function() {
         update_model_ability(model, view, "strength");
     });
