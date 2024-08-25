@@ -92,7 +92,7 @@ a:active {
     color: var(--green);
 }
 
-.buttons a, span {
+.buttons a, button {
     width: 150px;
     display: inline-block;
     font: bold;
