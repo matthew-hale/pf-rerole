@@ -154,8 +154,8 @@ function initialize_view(model, view) {
     })
     general.appendChild(view.name);
 
+    const abilities = document.getElementById("abilities");
     for (const ability of Object.keys(data.abilities)) {
-        const abilities = document.getElementById("abilities");
         let a = document.createElement("div");
         a.setAttribute("class", "ability");
         abilities.appendChild(a);
@@ -197,8 +197,9 @@ function initialize_view(model, view) {
             modifier: modifier
         }
     }
+
+    const saves = document.getElementById("saves");
     for (const save of Object.keys(data.saves)) {
-        const saves = document.getElementById("saves");
         let s = document.createElement("div");
         s.setAttribute("class", "save");
         saves.appendChild(s);
@@ -230,11 +231,11 @@ function initialize_view(model, view) {
             modifier: modifier
         }
     }
+
+    const feats = document.getElementById("feats");
     for (const feat of Object.keys(data.feats)) {
         const feat_data = data.feats[feat];
         const feat_keys = Object.keys(feat_data);
-
-        const feats = document.getElementById("feats");
 
         let f = document.createElement("details");
         f.setAttribute("class", "feat");
