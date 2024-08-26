@@ -29,6 +29,7 @@ character_table = """CREATE TABLE IF NOT EXISTS character(
 
 def get_con():
     con = sqlite3.connect(DB_PATH)
+    con.execute("PRAGMA foreign_keys = ON");
     con.autocommit = False
     return con
 
