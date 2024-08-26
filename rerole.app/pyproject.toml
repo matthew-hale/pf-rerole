@@ -11,6 +11,7 @@ python = "^3.12"
 flask = "^3.0.3"
 rerole-lib = "^0.3.0"
 requests = "^2.32.3"
+bcrypt = "^4.2.0"
 
 
 [build-system]
