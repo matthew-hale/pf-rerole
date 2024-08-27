@@ -237,7 +237,7 @@ def get_user_permissions(user_id: int) -> list:
     """
     with get_con() as con:
         cur = con.cursor()
-        res = cur.execute()
+        res = cur.execute(select_statement, (user_id,))
         data = res.fetchall()
     permissions = [x[0] for x in data]
     return permissions
