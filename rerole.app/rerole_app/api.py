@@ -31,6 +31,7 @@ def valid_auth():
     if valid_token:
         db.refresh_auth_token(token)
         return None
+    db.delete_auth_token(token)
     return jsonify({
         "message": "Invalid auth token.",
     }), 401
