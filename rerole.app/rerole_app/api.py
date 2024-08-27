@@ -160,6 +160,45 @@ def calculate(character_id: int):
         "url": url_for("api.get_character", character_id=character_id),
     }), 200
 
+@api.route("/characters/<character_id>/activate_antimagic_field", methods=["POST"])
+def activate_antimagic_field(character_id):
+    token = get_request_token()
+    user_id = token.get("user_id")
+    user_owns_character = db.user_owns_character(user_id, character_id)
+    update_owned_character = permission_to(token, "update_owned_character")
+    update_any_character = permission_to(token, "update_any_character")
+    update_this_character = user_owns_character and update_owned_character
+    if not (update_this_character or update_any_character):
+        abort(401)
+
+    data = db.get_character(character_id)
+    data = character.activate_antimagic_field(data)
+    db.update_character(character_id, data)
+    return jsonify({
+        "id": character_id,
+        "url": url_for("api.get_character", character_id=character_id),
+    }), 200
+
+@api.route("/characters/<character_id>/deactivate_antimagic_field", methods=["POST"])
+def deactivate_antimagic_field(character_id):
+    token = get_request_token()
+    user_id = token.get("user_id")
+    user_owns_character = db.user_owns_character(user_id, character_id)
+    update_owned_character = permission_to(token, "update_owned_character")
+    update_any_character = permission_to(token, "update_any_character")
+    update_this_character = user_owns_character and update_owned_character
+    if not (update_this_character or update_any_character):
+        abort(401)
+
+    data = db.get_character(character_id)
+    data = character.deactivate_antimagic_field(data)
+    db.update_character(character_id, data)
+    return jsonify({
+        "id": character_id,
+        "url": url_for("api.get_character", character_id=character_id),
+    }), 200
+
+
 def new_token(user_id, method, username):
     payload = {
         "user_id": user_id,
