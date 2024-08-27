@@ -1,5 +1,6 @@
 import jwt
-import uuid
+
+from datetime import datetime, timezone
 
 from flask import Blueprint, jsonify, request, session, url_for, abort
 
@@ -156,7 +157,7 @@ def new_token(user_id, method, username):
         "user_id": user_id,
         "method": method,
         "username": username,
-        "uuid": str(uuid.uuid4()),
+        "issued_at": str(datetime.now(timezone.utc)),
     }
     return jwt.encode(payload, api.secret_key, algorithm="HS256")
 
