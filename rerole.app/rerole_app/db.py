@@ -294,9 +294,11 @@ def authenticate(email: str, password: str) -> bool:
 def create_session_token(user_id: int, token: str):
     insert_token_statement = """
     INSERT INTO auth_token (user_id, token_type_id, token)
-         SELECT ?, token_type.id, ?
-           FROM token_type
-          WHERE token_type.name="session"
+         VALUES (?,
+                 (SELECT id
+                    FROM token_type
+                   WHERE name="session"),
+                 ?)
     """
     insert_token_values = (user_id, token,)
     with get_con() as con:
