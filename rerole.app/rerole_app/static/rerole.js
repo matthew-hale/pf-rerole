@@ -230,36 +230,6 @@ function initialize_view(model, view) {
         }
     }
 
-    const feats = document.getElementById("feats");
-    for (const feat of Object.keys(data.feats)) {
-        const feat_data = data.feats[feat];
-        const feat_keys = Object.keys(feat_data);
-
-        let f = document.createElement("details");
-        f.setAttribute("class", "feat");
-        feats.appendChild(f);
-
-        summary = document.createElement("summary");
-        summary.innerHTML = feat;
-        f.appendChild(summary);
-
-        label = document.createElement("label");
-        label.setAttribute("for", `feats.${feat}.description`)
-        label.innerHTML = "Description";
-        f.appendChild(label);
-
-        description = document.createElement("textarea");
-        description.setAttribute("id", `feats.${feat}.description`);
-        description.addEventListener("change", function() {
-            update_model_feat(model, view, feat);
-        });
-        f.appendChild(description);
-
-        view.feats[feat] = {
-            description: description,
-        }
-    }
-
     view.update = function(model) {
         let data = model.getData();
 
@@ -274,10 +244,6 @@ function initialize_view(model, view) {
         for (const save of Object.keys(this.saves)) {
             this.saves[save].value.value = data.saves[save].value;
             this.saves[save].modifier.innerHTML = data.saves[save].modifier;
-        }
-
-        for (const feat of Object.keys(this.feats)) {
-            this.feats[feat].description.value = data.feats[feat].description;
         }
     }
 }
@@ -301,13 +267,6 @@ function update_model_save(m, v, save_name) {
         value = 0;
     }
     data.saves[save_name].value = value;
-    m.setData(data);
-}
-
-function update_model_feat(m, v, feat_name) {
-    let data = m.getData();
-    let feat = data.feats[feat_name];
-    feat.description = v.feats[feat_name].description.value;
     m.setData(data);
 }
 
