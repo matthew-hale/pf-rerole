@@ -328,6 +328,12 @@ def valid_auth_token(token: str) -> bool:
         data = res.fetchall()
     return len(data) == 1
 
+def delete_auth_token(token: str):
+    with get_con() as con:
+        cur = con.cursor()
+        res = cur.execute("DELETE FROM auth_token WHERE token=?", (token,))
+        con.commit()
+
 
 def create_character(user_id: int, data: dict) -> int:
     name = data.get("name", "")
