@@ -62,6 +62,13 @@ def authenticate():
         "token": token,
     }), 200
 
+@api.route("/logout", methods=["POST"])
+def logout():
+    auth = request.authorization
+    token = auth.token
+    db.delete_auth_token(token)
+    return "", 204
+
 @api.route("/characters", methods=["GET"])
 def get_characters():
     token = get_request_token()
