@@ -163,16 +163,20 @@ def new_token(user_id, method, username):
     return jwt.encode(payload, api.secret_key, algorithm="HS256")
 
 def get_request_token() -> dict:
-    auth = request.authorization
-    if auth is None:
-        return {}
-    token = auth.token
-    if token is None:
-        return {}
+    token = get_raw_request_token()
     decoded =  jwt.decode(token, api.secret_key, algorithms=["HS256"])
     if decoded is None:
         return {}
     return decoded
+
+def get_raw_request_token() -> str:
+    auth = request.authorization
+    if auth is None:
+        return ""
+    token = auth.token
+    if token is None:
+        return ""
+    return token
 
 def permission_to(token, permission) -> bool:
     user_id = token.get("user_id")
