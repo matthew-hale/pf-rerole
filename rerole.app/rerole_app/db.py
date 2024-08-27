@@ -114,10 +114,10 @@ DEFAULT_ROLE_PERMS = {
 
 _role_insert_values = ", ".join(['("' + x + '")' for x in DEFAULT_ROLE_PERMS.keys()])
 TABLE_INSERTS = {
-    "auth_method": 'INSERT INTO auth_method (name) VALUES ("github.com"), ("rerole.app")',
-    "role": 'INSERT INTO role (name) VALUES' + _role_insert_values,
-    "permission": 'INSERT INTO permission (name) VALUES' + _permission_insert_values,
-    "token_type": 'INSERT INTO token_type (name) VALUES ("session"), ("API")',
+    "auth_method": 'INSERT OR IGNORE INTO auth_method (name) VALUES ("github"), ("rerole")',
+    "role": 'INSERT OR IGNORE INTO role (name) VALUES' + _role_insert_values,
+    "permission": 'INSERT OR IGNORE INTO permission (name) VALUES' + _permission_insert_values,
+    "token_type": 'INSERT OR IGNORE INTO token_type (name) VALUES ("session"), ("API")',
 }
 
 def get_con():
@@ -134,11 +134,11 @@ def init():
         for _, i in TABLE_INSERTS.items():
             cur.execute(i)
         role_perm_insert_statement = """
-            INSERT INTO role_permission (role_id, permission_id)
-                 SELECT role.id, permission.id
-                   FROM role, permission
-                  WHERE role.name=?
-                    AND permission.name=?
+            INSERT OR IGNORE INTO role_permission (role_id, permission_id)
+                      SELECT role.id, permission.id
+                        FROM role, permission
+                       WHERE role.name=?
+                         AND permission.name=?
         """
         for role in DEFAULT_ROLE_PERMS:
             for permission in DEFAULT_ROLE_PERMS[role]:
