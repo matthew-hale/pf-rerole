@@ -134,9 +134,6 @@ function initialize_view(model, view) {
     let modifier;
     let value;
     let description;
-    let type;
-    let affects;
-    let option;
 
     const general = document.getElementById("general");
     label = document.createElement("label");
@@ -258,36 +255,8 @@ function initialize_view(model, view) {
         });
         f.appendChild(description);
 
-        label = document.createElement("label");
-        label.setAttribute("for", `feats.${feat}.value`)
-        label.innerHTML = "Value";
-        f.appendChild(label);
-
-        value = document.createElement("input");
-        value.setAttribute("id", `feats.${feat}.value`)
-        value.setAttribute("type", "text")
-        value.addEventListener("change", function() {
-            update_model_feat(model, view, feat);
-        });
-        f.appendChild(value);
-
-        type = document.createElement("select");
-        type.setAttribute("id", `feats.${feat}.type`);
-        for (const t of EFFECT_TYPES) {
-            option = document.createElement("option");
-            option.setAttribute("value", t);
-            option.innerHTML = t;
-            type.appendChild(option);
-        }
-        type.addEventListener("change", function() {
-            update_model_feat(model, view, feat);
-        });
-        f.appendChild(type);
-
         view.feats[feat] = {
             description: description,
-            value: value,
-            type: type,
         }
     }
 
@@ -309,8 +278,6 @@ function initialize_view(model, view) {
 
         for (const feat of Object.keys(this.feats)) {
             this.feats[feat].description.value = data.feats[feat].description;
-            this.feats[feat].value.value = data.feats[feat].value;
-            this.feats[feat].type.value = data.feats[feat].type;
         }
     }
 }
@@ -341,13 +308,6 @@ function update_model_feat(m, v, feat_name) {
     let data = m.getData();
     let feat = data.feats[feat_name];
     feat.description = v.feats[feat_name].description.value;
-    let raw_value = v.feats[feat_name].value.value;
-    let value = parseInt(raw_value);
-    if (isNaN(value)) {
-        value = 0;
-    }
-    feat.value = value;
-    feat.type = v.feats[feat_name].type.value;
     m.setData(data);
 }
 
