@@ -229,13 +229,13 @@ def calculate(data: dict) -> dict:
     effect_index = data.get("effect_index", {})
 
     for k, v in data.get("abilities", {}).items():
-        ability_effects = resolve_effect_index(data, k)
+        ability_effects = _resolve_effect_index(data, k)
         effect_total = effect.total(ability_effects)
         v = ability.calculate(v, effect_total)
         data["abilities"][k] = v
 
     for k, v in data.get("saves", {}).items():
-        save_effects = resolve_effect_index(data, k)
+        save_effects = _resolve_effect_index(data, k)
         save_effect_total = effect.total(save_effects)
 
         save_ability_modifier = 0
@@ -250,7 +250,7 @@ def calculate(data: dict) -> dict:
         data["saves"][k] = v
 
     for k, v in data.get("skills", {}).items():
-        skill_effects = resolve_effect_index(data, k)
+        skill_effects = _resolve_effect_index(data, k)
         skill_effect_total = effect.total(skill_effects)
 
         skill_ability_modifier = 0
@@ -266,18 +266,57 @@ def calculate(data: dict) -> dict:
 
     return data
 
-def update_effect_index(data: dict) -> dict:
+def activate_antimagic_field(data: dict) -> dict:
+    """Apply the proper suppression state to each magical effect present."""
+    data = deepcopy(data)
+    active_magic_effect_key_seqs = utils.search(data, _active_magic_effect)
+    if not active_magic_effect_key_seqs:
+        return data
+
+    for seq in active_magic_effect_key_seqs:
+        e = utils.get_in(data, seq)
+        if not e:
+            continue
+        if effect.permanent(e):
+            e["state"] = "suppressed"
+        elif effect.togglable(e):
+            e["state"] = "disabled"
+
+    data = calculate(data)
+    return data
+
+def deactivate_antimagic_field(data: dict) -> dict:
+    """Like activate_antimagic_field, but in reverse."""
+    data = deepcopy(data)
+    inactive_magic_effect_key_seqs = utils.search(data, _inactive_magic_effect)
+    if not inactive_magic_effect_key_seqs:
+        return data
+
+    for seq in inactive_magic_effect_key_seqs:
+        e = utils.get_in(data, seq)
+        if not e:
+            continue
+        if effect.permanent(e):
+            _ = e.pop("state", None)
+        elif effect.togglable(e):
+            e["state"] = "active"
+
+    data = calculate(data)
+    return data
+
+
+def _update_effect_index(data: dict) -> dict:
     """Add an up-to-date effect index to the provided character dict."""
     data = deepcopy(data)
 
-    effect_index = build_effect_index(data)
+    effect_index = _build_effect_index(data)
     if not effect_index:
         return data
 
     data["effect_index"] = effect_index
     return data
 
-def build_effect_index(data: dict) -> dict | None:
+def _build_effect_index(data: dict) -> dict | None:
     """Finds all effects in character data, and builds an index of things->effect key sequences.
 
     This function assumes that names of things are globally unique. If a character has an ability called 'strength' and a skill called 'strength', the resulting effect index will squish them together into a single entry.
@@ -337,51 +376,13 @@ def build_effect_index(data: dict) -> dict | None:
 
     return effect_index
 
-def resolve_effect_index(data: dict, name: str) -> list[dict]:
+def _resolve_effect_index(data: dict, name: str) -> list[dict]:
     """Return a list of effects that are affecting the named item."""
     effect_key_seqs = utils.get_in(data, ["effect_index", name])
     if not effect_key_seqs:
         return []
 
     return [utils.get_in(data, seq) for seq in effect_key_seqs]
-
-def activate_antimagic_field(data: dict) -> dict:
-    """Apply the proper suppression state to each magical effect present."""
-    data = deepcopy(data)
-    active_magic_effect_key_seqs = utils.search(data, _active_magic_effect)
-    if not active_magic_effect_key_seqs:
-        return data
-
-    for seq in active_magic_effect_key_seqs:
-        e = utils.get_in(data, seq)
-        if not e:
-            continue
-        if effect.permanent(e):
-            e["state"] = "suppressed"
-        elif effect.togglable(e):
-            e["state"] = "disabled"
-
-    data = calculate(data)
-    return data
-
-def deactivate_antimagic_field(data: dict) -> dict:
-    """Like activate_antimagic_field, but in reverse."""
-    data = deepcopy(data)
-    inactive_magic_effect_key_seqs = utils.search(data, _inactive_magic_effect)
-    if not inactive_magic_effect_key_seqs:
-        return data
-
-    for seq in inactive_magic_effect_key_seqs:
-        e = utils.get_in(data, seq)
-        if not e:
-            continue
-        if effect.permanent(e):
-            _ = e.pop("state", None)
-        elif effect.togglable(e):
-            e["state"] = "active"
-
-    data = calculate(data)
-    return data
 
 def _active_magic_effect(e: dict) -> bool:
     return isinstance(e, dict) and effect.active(e) and e.get("magic", False)
