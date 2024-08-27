@@ -31,14 +31,19 @@ async function get_character() {
     const endpoint = `${base_api_url}/characters/${C_ID}`;
     return fetch(endpoint, {
         method: "GET",
-        credentials: "same-origin"
+        headers: {
+            Authorization: get_authorization_header(),
+        },
+        credentials: "same-origin",
     })
         .then((response) => {
             if (response.status == 401) {
-                redirect_to_login();
-                return;
+                throw "401";
             }
             return response.json();
+        })
+        .catch((err) => {
+            logout();
         });
 }
 
@@ -49,15 +54,18 @@ async function put_character(d) {
         credentials: "same-origin",
         body: JSON.stringify(d),
         headers: {
-            "Content-Type": "application/json"
-        }
+            "Content-Type": "application/json",
+            Authorization: get_authorization_header(),
+        },
     })
         .then((response) => {
             if (response.status == 401) {
-                redirect_to_login();
-                return;
+                throw "401";
             }
             return response.json();
+        })
+        .catch((err) => {
+            logout();
         });
 }
 
@@ -65,14 +73,19 @@ async function calculate() {
     const endpoint = `${base_api_url}/characters/${C_ID}/calculate`;
     return fetch(endpoint, {
         method: "POST",
-        credentials: "same-origin"
+        headers: {
+            Authorization: get_authorization_header(),
+        },
+        credentials: "same-origin",
     })
         .then((response) => {
             if (response.status == 401) {
-                redirect_to_login();
-                return;
+                throw "401";
             }
             return response.json();
+        })
+        .catch((err) => {
+            logout();
         });
 }
 
@@ -82,24 +95,12 @@ var M = {
         this.data = d;
         put_character(this.data)
             .then((response) => {
-                if (response.status == 401) {
-                    redirect_to_login();
-                    return;
-                }
                 return calculate();
             })
             .then((response) => {
-                if (response.status == 401) {
-                    redirect_to_login();
-                    return;
-                }
                 return get_character();
             })
             .then((response) => {
-                if (response.status == 401) {
-                    redirect_to_login();
-                    return;
-                }
                 this.data = response;
                 C.handler.call(C);
             });
@@ -350,8 +351,29 @@ function update_model_feat(m, v, feat_name) {
     m.setData(data);
 }
 
-function redirect_to_login() {
-    window.location.replace(`${hostname}/login`);
+function logout() {
+    console.log("logout");
+    let token = window.localStorage.getItem("token");
+    fetch(`${base_api_url}/logout`, {
+        method: "POST",
+        headers: {
+            Authorization: get_authorization_header(),
+        },
+        credentials: "same-origin",
+    })
+        .then((res) => {
+            console.log(res);
+        })
+        .finally(() => {
+            window.localStorage.clear();
+            window.location.replace(`${hostname}/logout`);
+        });
+}
+
+function get_authorization_header() {
+    let token = window.localStorage.getItem("token");
+    let value = `Bearer ${token}`;
+    return value;
 }
 
 window.onload = function() {
