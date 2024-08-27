@@ -44,11 +44,183 @@ def new() -> dict:
                 "ability": "wisdom",
             },
         },
-        "skills": {},
-        "feats": {},
-        "traits": {},
-        "special abilities": {},
-        "equipment": {},
+        "skills": {
+            "acrobatics": {
+                "ranks": 0,
+                "class": False,
+                "ability": "dexterity",
+            },
+            "appraise": {
+                "ranks": 0,
+                "class": False,
+                "ability": "intelligence",
+            },
+            "bluff": {
+                "ranks": 0,
+                "class": False,
+                "ability": "charisma",
+            },
+            "climb": {
+                "ranks": 0,
+                "class": False,
+                "ability": "strength",
+            },
+            "craft": {
+                "ranks": 0,
+                "class": False,
+                "ability": "intelligence",
+            },
+            "diplomacy": {
+                "ranks": 0,
+                "class": False,
+                "ability": "charisma",
+            },
+            "disable device": {
+                "ranks": 0,
+                "class": False,
+                "ability": "dexterity",
+            },
+            "disguise": {
+                "ranks": 0,
+                "class": False,
+                "ability": "charisma",
+            },
+            "escape artist": {
+                "ranks": 0,
+                "class": False,
+                "ability": "dexterity",
+            },
+            "fly": {
+                "ranks": 0,
+                "class": False,
+                "ability": "dexterity",
+            },
+            "handle animal": {
+                "ranks": 0,
+                "class": False,
+                "ability": "charisma",
+            },
+            "heal": {
+                "ranks": 0,
+                "class": False,
+                "ability": "wisdom",
+            },
+            "intimidate": {
+                "ranks": 0,
+                "class": False,
+                "ability": "charisma",
+            },
+            "knowledge (arcana)": {
+                "ranks": 0,
+                "class": False,
+                "ability": "intelligence",
+            },
+            "knowledge (dungeoneering)": {
+                "ranks": 0,
+                "class": False,
+                "ability": "intelligence",
+            },
+            "knowledge (engineering)": {
+                "ranks": 0,
+                "class": False,
+                "ability": "intelligence",
+            },
+            "knowledge (geography)": {
+                "ranks": 0,
+                "class": False,
+                "ability": "intelligence",
+            },
+            "knowledge (history)": {
+                "ranks": 0,
+                "class": False,
+                "ability": "intelligence",
+            },
+            "knowledge (local)": {
+                "ranks": 0,
+                "class": False,
+                "ability": "intelligence",
+            },
+            "knowledge (nature)": {
+                "ranks": 0,
+                "class": False,
+                "ability": "intelligence",
+            },
+            "knowledge (nobility)": {
+                "ranks": 0,
+                "class": False,
+                "ability": "intelligence",
+            },
+            "knowledge (planes)": {
+                "ranks": 0,
+                "class": False,
+                "ability": "intelligence",
+            },
+            "knowledge (religion)": {
+                "ranks": 0,
+                "class": False,
+                "ability": "intelligence",
+            },
+            "linguistics": {
+                "ranks": 0,
+                "class": False,
+                "ability": "intelligence",
+            },
+            "perception": {
+                "ranks": 0,
+                "class": False,
+                "ability": "wisdom",
+            },
+            "perform": {
+                "ranks": 0,
+                "class": False,
+                "ability": "charisma",
+            },
+            "profession": {
+                "ranks": 0,
+                "class": False,
+                "ability": "wisdom",
+            },
+            "ride": {
+                "ranks": 0,
+                "class": False,
+                "ability": "dexterity",
+            },
+            "sense motive": {
+                "ranks": 0,
+                "class": False,
+                "ability": "wisdom",
+            },
+            "sleight of hand": {
+                "ranks": 0,
+                "class": False,
+                "ability": "dexterity",
+            },
+            "spellcraft": {
+                "ranks": 0,
+                "class": False,
+                "ability": "intelligence",
+            },
+            "stealth": {
+                "ranks": 0,
+                "class": False,
+                "ability": "dexterity",
+            },
+            "survival": {
+                "ranks": 0,
+                "class": False,
+                "ability": "wisdom",
+            },
+            "swim": {
+                "ranks": 0,
+                "class": False,
+                "ability": "strength",
+            },
+            "use magic device": {
+                "ranks": 0,
+                "class": False,
+                "ability": "charisma",
+            },
+        },
     }
 
 def calculate(data: dict) -> dict:
