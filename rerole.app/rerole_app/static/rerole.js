@@ -89,6 +89,37 @@ async function calculate() {
         });
 }
 
+async function antimagic_field(state) {
+    if (!["activate", "deactivate"].includes(state)) {
+        return;
+    }
+    const endpoint = `${base_api_url}/characters/${C_ID}/${state}_antimagic_field`;
+    return fetch(endpoint, {
+        method: "POST",
+        headers: {
+            Authorization: get_authorization_header(),
+        },
+        credentials: "same-origin",
+    })
+        .then((response) => {
+            if (response.status == 401) {
+                throw "401";
+            }
+            return get_character();
+        })
+        .then((json) => {
+            M.data = json;
+            C.handler.call(C);
+        })
+        .catch((err) => {
+            if (err == "401") {
+                logout();
+            }
+            console.log(err);
+        });
+}
+
+
 var M = {
     data: {},
     setData: function(d) {
