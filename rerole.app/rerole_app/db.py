@@ -290,6 +290,7 @@ def authenticate(email: str, password: str) -> bool:
     correct_password = new_hash == current_hash
     return correct_password
 
+
 def create_session_token(user_id: int, token: str):
     insert_token_statement = """
     INSERT INTO auth_token (user_id, token_type_id, token)
@@ -315,7 +316,6 @@ def refresh_auth_token(token: str):
         res = cur.execute(token_update_statement, token_update_values)
         rows = res.fetchall()
         con.commit()
-
 
 def valid_auth_token(token: str) -> bool:
     valid_token_stmt = """
@@ -359,7 +359,6 @@ def delete_character(character_id: int):
         cur = con.cursor()
         res = cur.execute("DELETE FROM character WHERE id=?", (character_id,))
         con.commit()
-
 
 def user_owns_character(user_id, character_id) -> bool:
     with get_con() as con:
