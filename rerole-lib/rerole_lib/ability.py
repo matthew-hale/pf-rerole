@@ -1,6 +1,27 @@
 import math
 
 from copy import deepcopy
+def default() -> dict:
+    return {
+        "strength": {
+            "score": 10,
+        },
+        "dexterity": {
+            "score": 10,
+        },
+        "constitution": {
+            "score": 10,
+        },
+        "intelligence": {
+            "score": 10,
+        },
+        "wisdom": {
+            "score": 10,
+        },
+        "charisma": {
+            "score": 10,
+        },
+    }
 
 def calculate(a: dict, effect_total: int = 0):
     """Calculate a new ability score and modifier, and add them to the input dict."""
