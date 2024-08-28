@@ -32,12 +32,9 @@ def calculate(data: dict) -> dict:
         save_effects = resolve_effect_index(data, k)
         save_effect_total = effect.total(save_effects)
 
-        save_ability_modifier = 0
-        save_ability_penalty = 0
-        save_ability = utils.get_in(data, ["abilities", v.get("ability")])
-        if save_ability:
-            save_ability_modifier = save_ability.get("modifier", 0)
-            save_ability_penalty = ability.penalty(save_ability)
+        save_ability = utils.get_in(data, ["abilities", v.get("ability")], {})
+        save_ability_modifier = save_ability.get("modifier", 0)
+        save_ability_penalty = ability.penalty(save_ability)
 
         effect_total = save_effect_total + save_ability_modifier + save_ability_penalty
         save.calculate(v, effect_total)
@@ -46,12 +43,9 @@ def calculate(data: dict) -> dict:
         skill_effects = resolve_effect_index(data, k)
         skill_effect_total = effect.total(skill_effects)
 
-        skill_ability_modifier = 0
-        skill_ability_penalty = 0
-        skill_ability = utils.get_in(data, ["abilities", v.get("ability")])
-        if skill_ability:
-            skill_ability_modifier = skill_ability.get("modifier", 0)
-            skill_ability_penalty = ability.penalty(skill_ability)
+        skill_ability = utils.get_in(data, ["abilities", v.get("ability")], {})
+        skill_ability_modifier = skill_ability.get("modifier", 0)
+        skill_ability_penalty = ability.penalty(skill_ability)
 
         effect_total = skill_effect_total + skill_ability_modifier + skill_ability_penalty
         skill.calculate(v, effect_total)
