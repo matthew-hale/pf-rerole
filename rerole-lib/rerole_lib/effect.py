@@ -100,6 +100,21 @@ permanent_states = ["suppressed", None]
 An effect without a "state" field is assumed to be permanently active.
 """
 
+antimagic_field_state = {
+    "suppressed": None,
+    None: "suppressed",
+    "active": "disabled",
+    "disabled": "active",
+    "inactive": "inactive",
+}
+
+def toggle_antimagic_field(e: dict):
+    change_to = antimagic_field_state.get(e.get("state"))
+    if change_to is None and "state" in e.keys():
+        del e["state"]
+        return
+    e["state"] = change_to
+
 def permanent(e: dict) -> bool:
     return e.get("state") in permanent_states
 
