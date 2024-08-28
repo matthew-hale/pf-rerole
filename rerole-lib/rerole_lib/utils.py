@@ -1,46 +1,55 @@
 from functools import reduce
 
-def get_in(data: dict, keys: list):
+def get_in(data: dict, keys: list, default=None):
     """A la Clojure's `get-in`; like .get, but uses a sequence of keys.
 
-    To facilitate the common python idiom for checking the existence of a key (comparing to None), this function returns 'None' instead of '{}' in the event that a key is missing. This allows, e.g., the following to work:
+    This function mimics Clojure's `get-in` function. Provide it with a dictionary, a sequence of keys, and an optional default value, and it will return either the specified nested dictionary value, or the default.
 
-    data = {
-        "a": 1,
-        "b": {"alpha": 0, "beta": 3.14},
-        "c": 4,
-    }
+    For example:
 
-    want = get_in(data, ["b", "alpha"])
-    if want is None:
-        ...
+    >>> data = {
+    ...     "a": {
+    ...         1: {
+    ...             "apple": "tasty",
+    ...         },
+    ...     },
+    ... }
+    >>> get_in(data, ["a", 1, "apple"])
+    'tasty'
+    >>>
+    >>> get_in(data, ["a", 1])
+    {'apple': 'tasty'}
+    >>>
+    >>> get_in(data, ["a", 1, "banana"]) # returns None
+    >>> get_in(data, ["a", 2, "banana"]) # returns None
+    >>> get_in(data, ["a", 2])           # returns None
+    >>> get_in(data, ["b"])              # returns None
+    >>>
+    >>> get_in(data, ["a", 1, "banana"] default={})
+    {}
+    >>>
 
-    Note that the result is the actual object within `data`; if it's mutable, updates to it will also update `data` in place.
+    The default value of `None` makes `get_in` behave like Python's own `.get()` method for dictionaries. It would have been more personally useful to set the default to `{}`, but I wanted to stick to the normal language behavior as much as possible.
 
-    E.g.:
+    One scenario that this function trips up on is when `None` is a possible valid value. I think it should basically never be a valid value, so I don't really care to fix this, but beware:
 
-    data = {
-        "a": {
-            "b": {
-                "value": 1
-            }
-        }
-    }
-
-    b = get_in(data, ["a", "b"])
-    b["value"] = "banana"
-    print(data)
-    {
-        "a": {
-            "b": {
-                "value": "banana"
-            }
-        }
-    }
+    >>> data
+    {'a': {1: {'apple': 'tasty'}}}
+    >>>
     """
-    output = reduce(lambda c, k: c.get(k, {}), keys, data)
-    if output == {} or not keys:
-        output = None
+    if not keys:
+        return default
+
+    def getter(data, key):
+        if data is None:
+            return None
+        if key not in data:
+            return None
+        return data.get(key)
+
+    output = reduce(getter, keys, data)
+    if output is None:
+        return default
     return output
 
 def search(data: dict, fn, path=[]) -> list | None:

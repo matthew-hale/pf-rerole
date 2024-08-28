@@ -85,10 +85,11 @@ class type(str, Enum):
     TRAIT = "trait"
 
 
-_stacking = [type.CIRCUMSTANCE, type.DODGE, type.UNTYPED, None]
-_active_states = ["active", None]
-_inactive_states = ["inactive", "suppressed", "disabled"]
-_permanent_states = ["suppressed", None]
+stacking_types = [type.CIRCUMSTANCE, type.DODGE, type.UNTYPED, None]
+active_states = ["active", None]
+inactive_states = ["inactive", "suppressed", "disabled"]
+permanent_states = ["suppressed", None]
+
 """
 "active" and "inactive" indicate the status of a togglable effect.
 
@@ -99,21 +100,36 @@ _permanent_states = ["suppressed", None]
 An effect without a "state" field is assumed to be permanently active.
 """
 
+antimagic_field_state = {
+    "suppressed": None,
+    None: "suppressed",
+    "active": "disabled",
+    "disabled": "active",
+    "inactive": "inactive",
+}
+
+def toggle_antimagic_field(e: dict):
+    change_to = antimagic_field_state.get(e.get("state"))
+    if change_to is None and "state" in e.keys():
+        del e["state"]
+        return
+    e["state"] = change_to
+
 def permanent(e: dict) -> bool:
-    return e.get("state") in _permanent_states
+    return e.get("state") in permanent_states
 
 def togglable(e: dict) -> bool:
     return not permanent(e)
 
 def active(e: dict) -> bool:
-    return e.get("state") in _active_states
+    return e.get("state") in active_states
 
 def inactive(e: dict) -> bool:
     return not active(e)
 
 def stacking(e: dict) -> bool:
     t = e.get("type")
-    return t in _stacking
+    return t in stacking_types
 
 def non_stacking(e: dict) -> bool:
     return not stacking(e)

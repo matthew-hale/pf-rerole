@@ -18,7 +18,7 @@ def test_calculate():
         "drain": 1
     }
     effect_total = 4
-    calc_strength = ability.calculate(strength, effect_total)
+    ability.calculate(strength, effect_total)
 
-    assert calc_strength.get("modifier") == 4
-    assert ability.penalty(calc_strength) == -1
+    assert strength.get("modifier") == 4
+    assert ability.penalty(strength) == -1
