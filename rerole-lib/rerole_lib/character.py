@@ -1,5 +1,3 @@
-from copy import deepcopy
-
 from rerole_lib import ability
 from rerole_lib import effect
 from rerole_lib import save
@@ -16,14 +14,13 @@ def default() -> dict:
 
 def calculate(data: dict) -> dict:
     """Calulate all relevant modifiers, returning a new dict."""
-    data = update_effect_index(data)
+    update_effect_index(data)
     effect_index = data.get("effect_index", {})
 
     for k, v in data.get("abilities", {}).items():
         ability_effects = resolve_effect_index(data, k)
         effect_total = effect.total(ability_effects)
-        v = ability.calculate(v, effect_total)
-        data["abilities"][k] = v
+        ability.calculate(v, effect_total)
 
     for k, v in data.get("saves", {}).items():
         save_effects = resolve_effect_index(data, k)
@@ -37,8 +34,7 @@ def calculate(data: dict) -> dict:
             save_ability_penalty = ability.penalty(save_ability)
 
         effect_total = save_effect_total + save_ability_modifier + save_ability_penalty
-        v = save.calculate(v, effect_total)
-        data["saves"][k] = v
+        save.calculate(v, effect_total)
 
     for k, v in data.get("skills", {}).items():
         skill_effects = resolve_effect_index(data, k)
@@ -52,17 +48,14 @@ def calculate(data: dict) -> dict:
             skill_ability_penalty = ability.penalty(skill_ability)
 
         effect_total = skill_effect_total + skill_ability_modifier + skill_ability_penalty
-        v = skill.calculate(v, effect_total)
-        data["skills"][k] = v
+        skill.calculate(v, effect_total)
 
-    return data
 
-def activate_antimagic_field(data: dict) -> dict:
+def activate_antimagic_field(data: dict):
     """Apply the proper suppression state to each magical effect present."""
-    data = deepcopy(data)
     active_magic_effect_key_seqs = utils.search(data, active_magic_effect)
     if not active_magic_effect_key_seqs:
-        return data
+        return
 
     for seq in active_magic_effect_key_seqs:
         e = utils.get_in(data, seq)
@@ -73,15 +66,13 @@ def activate_antimagic_field(data: dict) -> dict:
         elif effect.togglable(e):
             e["state"] = "disabled"
 
-    data = calculate(data)
-    return data
+    calculate(data)
 
-def deactivate_antimagic_field(data: dict) -> dict:
+def deactivate_antimagic_field(data: dict):
     """Like activate_antimagic_field, but in reverse."""
-    data = deepcopy(data)
     inactive_magic_effect_key_seqs = utils.search(data, inactive_magic_effect)
     if not inactive_magic_effect_key_seqs:
-        return data
+        return
 
     for seq in inactive_magic_effect_key_seqs:
         e = utils.get_in(data, seq)
@@ -92,31 +83,28 @@ def deactivate_antimagic_field(data: dict) -> dict:
         elif effect.togglable(e):
             e["state"] = "active"
 
-    data = calculate(data)
-    return data
+    calculate(data)
 
 
-def update_effect_index(data: dict) -> dict:
+def update_effect_index(data: dict):
     """Add an up-to-date effect index to the provided character dict."""
-    data = deepcopy(data)
-
     effect_index = build_effect_index(data)
     if not effect_index:
-        return data
+        return
 
     data["effect_index"] = effect_index
-    return data
 
-def build_effect_index(data: dict) -> dict | None:
+def build_effect_index(data: dict) -> dict:
     """Finds all effects in character data, and builds an index of things->effect key sequences.
 
     This function assumes that names of things are globally unique. If a character has an ability called 'strength' and a skill called 'strength', the resulting effect index will squish them together into a single entry.
 
-    In practice, things which have effects applied to them generally have globally unique names, as they're things like abilities, saving throws, skills, and various built-in rolls, like AC and spellcasting concentration checks."""
+    In practice, things which have effects applied to them generally have globally unique names, as they're things like abilities, saving throws, skills, and various built-in rolls, like AC and spellcasting concentration checks.
+    """
     effects = utils.search(data, lambda x: isinstance(x, dict) and "affects" in x.keys())
 
     if not effects:
-        return None
+        return {}
 
     effect_index = {}
     for key_seq in effects:

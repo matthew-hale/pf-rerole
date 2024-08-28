@@ -1,5 +1,3 @@
-from copy import deepcopy
-
 def default() -> dict:
     return {
         "acrobatics": {
@@ -110,8 +108,6 @@ def default() -> dict:
     }
 
 def calculate(s: dict, effect_total: int = 0):
-    out = deepcopy(s)
-
     ranks = s.get("ranks", 0)
     is_class = s.get("class", False)
     has_ranks = ranks > 0
@@ -120,5 +116,4 @@ def calculate(s: dict, effect_total: int = 0):
 
     modifier = ranks + class_bonus + effect_total
 
-    out["modifier"] = modifier
-    return out
+    s["modifier"] = modifier
