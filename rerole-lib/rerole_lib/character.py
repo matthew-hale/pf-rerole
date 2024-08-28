@@ -58,13 +58,8 @@ def activate_antimagic_field(data: dict):
         return
 
     for seq in active_magic_effect_key_seqs:
-        e = utils.get_in(data, seq)
-        if not e:
-            continue
-        if effect.permanent(e):
-            e["state"] = "suppressed"
-        elif effect.togglable(e):
-            e["state"] = "disabled"
+        e = utils.get_in(data, seq, {})
+        effect.toggle_antimagic_field(e)
 
 def deactivate_antimagic_field(data: dict):
     """Like activate_antimagic_field, but in reverse."""
@@ -73,13 +68,8 @@ def deactivate_antimagic_field(data: dict):
         return
 
     for seq in inactive_magic_effect_key_seqs:
-        e = utils.get_in(data, seq)
-        if not e:
-            continue
-        if effect.permanent(e):
-            _ = e.pop("state", None)
-        elif effect.togglable(e):
-            e["state"] = "active"
+        e = utils.get_in(data, seq, {})
+        effect.toggle_antimagic_field(e)
 
 
 def update_effect_index(data: dict):
