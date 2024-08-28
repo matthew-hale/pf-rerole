@@ -15,29 +15,26 @@ def test_skill_calculation():
         "ranks": 0,
         "class": True,
     }
-    calc_acrobatics = skill.calculate(acrobatics, effect_total)
-    assert calc_acrobatics.get("modifier") == 10
+    skill.calculate(acrobatics, effect_total)
+    assert acrobatics.get("modifier") == 10
 
     climb = {
         "ranks": 2,
         "class": True,
     }
     skill.calculate(climb, effect_total)
-    calc_climb = skill.calculate(climb, effect_total)
-    assert calc_climb.get("modifier") == 15
+    assert climb.get("modifier") == 15
 
     swim = {
         "ranks": 2,
         "class": False,
     }
     skill.calculate(swim, effect_total)
-    calc_swim = skill.calculate(swim, effect_total)
-    assert calc_swim.get("modifier") == 12
+    assert swim.get("modifier") == 12
 
     sleight_of_hand = {
         "ranks": 0,
         "class": False,
     }
     skill.calculate(sleight_of_hand, effect_total)
-    calc_sleight_of_hand = skill.calculate(sleight_of_hand, effect_total)
-    assert calc_sleight_of_hand.get("modifier") == 10
+    assert sleight_of_hand.get("modifier") == 10

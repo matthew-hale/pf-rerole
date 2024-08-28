@@ -106,7 +106,7 @@ def test_build_effect_index():
 def test_calculate():
     with open("tests/character/test_data.json") as f:
         data = json.load(f)
-    data = c.calculate(data)
+    c.calculate(data)
 
     assert utils.get_in(data, ["skills", "climb", "modifier"]) == 11
     assert utils.get_in(data, ["saves", "will", "modifier"]) == 9
@@ -115,11 +115,13 @@ def test_antimagic():
     with open("tests/character/test_data.json") as f:
         data = json.load(f)
 
-    data = c.calculate(data)
+    c.calculate(data)
     assert utils.get_in(data, ["skills", "acrobatics", "modifier"]) == 9
 
-    data = c.activate_antimagic_field(data)
+    data["antimagic_field"] = True
+    c.calculate(data)
     assert utils.get_in(data, ["skills", "acrobatics", "modifier"]) == 5
 
-    data = c.deactivate_antimagic_field(data)
+    data["antimagic_field"] = False
+    c.calculate(data)
     assert utils.get_in(data, ["skills", "acrobatics", "modifier"]) == 9

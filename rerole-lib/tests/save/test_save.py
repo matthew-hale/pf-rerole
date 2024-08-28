@@ -8,5 +8,5 @@ def test_save_calculation():
         "ability": "dexterity",
     }
 
-    calculated = save.calculate(data, effect_total)
-    assert calculated.get("modifier") == 12
+    save.calculate(data, effect_total)
+    assert data.get("modifier") == 12
