@@ -14,6 +14,12 @@ def default() -> dict:
 
 def calculate(data: dict) -> dict:
     """Calulate all relevant modifiers, returning a new dict."""
+    antimagic_field_is_on = data.get("antimagic_field", False)
+    if antimagic_field_is_on:
+        activate_antimagic_field(data)
+    else:
+        deactivate_antimagic_field(data)
+
     update_effect_index(data)
     effect_index = data.get("effect_index", {})
 
@@ -66,8 +72,6 @@ def activate_antimagic_field(data: dict):
         elif effect.togglable(e):
             e["state"] = "disabled"
 
-    calculate(data)
-
 def deactivate_antimagic_field(data: dict):
     """Like activate_antimagic_field, but in reverse."""
     inactive_magic_effect_key_seqs = utils.search(data, inactive_magic_effect)
@@ -82,8 +86,6 @@ def deactivate_antimagic_field(data: dict):
             _ = e.pop("state", None)
         elif effect.togglable(e):
             e["state"] = "active"
-
-    calculate(data)
 
 
 def update_effect_index(data: dict):
