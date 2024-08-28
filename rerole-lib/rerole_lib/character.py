@@ -165,6 +165,7 @@ def resolve_effect_index(data: dict, name: str) -> list[dict]:
 
     return [utils.get_in(data, seq) for seq in effect_key_seqs]
 
+
 def active_magic_effect(e: dict) -> bool:
     return isinstance(e, dict) and effect.active(e) and e.get("magic", False)
 
