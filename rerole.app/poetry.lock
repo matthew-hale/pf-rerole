@@ -356,13 +356,13 @@ use-chardet-on-py3 = ["chardet (>=3.0.2,<6)"]
 
 [[package]]
 name = "rerole-lib"
-version = "0.5.0"
+version = "0.6.0"
 description = "A library for interacting with Pathfinder 1E character sheet data."
 optional = false
 python-versions = "<4.0,>=3.12"
 files = [
-    {file = "rerole_lib-0.5.0-py3-none-any.whl", hash = "sha256:0ccb3501437275721895d63eb6e0eba427ee8d056137bded9f776f50f2513c33"},
-    {file = "rerole_lib-0.5.0.tar.gz", hash = "sha256:ec99b93ef26e0dcc773eb39b992a5adffa1d6c41c0f01acf2c2af8b09121e038"},
+    {file = "rerole_lib-0.6.0-py3-none-any.whl", hash = "sha256:e5ffe2648331f47e535b4941e21fa1519f4aa114af1ffbfcc8dbdccc2230a171"},
+    {file = "rerole_lib-0.6.0.tar.gz", hash = "sha256:a07b1304ce600662d1cb142d751366bbc4249f4899b8d54ac37e4b25b73ac759"},
 ]
 
 [[package]]
@@ -402,4 +402,4 @@ watchdog = ["watchdog (>=2.3)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "ae82629055f9c664b244df04a4119307fdb0f70851b1283c9f5c7db16e0e2e17"
+content-hash = "20760fa3dbf9ec5220c1ea48b14c4613cf7cc99254b39bb7b4e4a79312e8a761"
