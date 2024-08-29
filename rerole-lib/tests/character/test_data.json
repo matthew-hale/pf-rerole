@@ -58,16 +58,45 @@
             "magic": true,
             "state": "active",
             "affects": {
-                "group": "abilities",
-                "name": "strength"
+                "abilities": [
+                    "strength"
+                ]
             }
         },
         "general skill buff": {
-            "value": 1,
-            "magic": true,
-            "state": "active",
-            "affects": {
-                "group": "skills"
+            "description": "+1 bonus to all skills.",
+            "1": {
+                "value": 1,
+                "magic": true,
+                "state": "active",
+                "affects": {
+                    "skills": true
+                }
+            }
+        },
+        "Sacred Oath": {
+            "description": "This spell gives a sacred bonus to the Will save, Diplomacy, and Knowledge (Religion), and an additional enhancement bonus to Constitution.",
+            "1": {
+                "value": 2,
+                "type": "sacred",
+                "magic": true,
+                "state": "active",
+                "affects": {
+                    "saves": "will",
+                    "skills": [
+                        "diplomacy",
+                        "knowledge (religion)"
+                    ]
+                }
+            },
+            "2": {
+                "value": 4,
+                "type": "enhancement",
+                "magic": true,
+                "state": "active",
+                "affects": {
+                    "abilities": "constitution"
+                }
             }
         }
     },
@@ -75,15 +104,13 @@
         "skill focus (acrobatics)": {
             "value": 3,
             "affects": {
-                "group": "skills",
-                "name": "acrobatics"
+                "skills": "acrobatics"
             }
         },
         "iron will": {
             "value": 2,
             "affects": {
-                "group": "saves",
-                "name": "will"
+                "saves": "will"
             }
         }
     },
@@ -94,8 +121,7 @@
             "magic": true,
             "type": "enhancement",
             "affects": {
-                "group": "abilities",
-                "name": "strength"
+                "abilities": "strength"
             }
         },
         "belt of dex": {
@@ -104,15 +130,14 @@
             "magic": true,
             "type": "enhancement",
             "affects": {
-                "group": "abilities",
-                "name": "dexterity"
+                "abilities": "dexterity"
             }
         },
         "cloak of resistance": {
             "value": 1,
             "type": "resistance",
             "affects": {
-                "group": "saves"
+                "saves": true
             }
         }
     }
