@@ -43,7 +43,10 @@ async function get_character() {
             return response.json();
         })
         .catch((err) => {
-            logout();
+            if (err == "401") {
+                logout();
+            }
+            console.log(err);
         });
 }
 
@@ -65,53 +68,6 @@ async function put_character(d) {
             return response.json();
         })
         .catch((err) => {
-            logout();
-        });
-}
-
-async function calculate() {
-    const endpoint = `${base_api_url}/characters/${C_ID}/calculate`;
-    return fetch(endpoint, {
-        method: "POST",
-        headers: {
-            Authorization: get_authorization_header(),
-        },
-        credentials: "same-origin",
-    })
-        .then((response) => {
-            if (response.status == 401) {
-                throw "401";
-            }
-            return response.json();
-        })
-        .catch((err) => {
-            logout();
-        });
-}
-
-async function antimagic_field(state) {
-    if (!["activate", "deactivate"].includes(state)) {
-        return;
-    }
-    const endpoint = `${base_api_url}/characters/${C_ID}/${state}_antimagic_field`;
-    return fetch(endpoint, {
-        method: "POST",
-        headers: {
-            Authorization: get_authorization_header(),
-        },
-        credentials: "same-origin",
-    })
-        .then((response) => {
-            if (response.status == 401) {
-                throw "401";
-            }
-            return get_character();
-        })
-        .then((json) => {
-            M.data = json;
-            C.handler.call(C);
-        })
-        .catch((err) => {
             if (err == "401") {
                 logout();
             }
@@ -125,12 +81,6 @@ var M = {
     setData: function(d) {
         this.data = d;
         put_character(this.data)
-            .then((response) => {
-                return calculate();
-            })
-            .then((response) => {
-                return get_character();
-            })
             .then((response) => {
                 this.data = response;
                 C.handler.call(C);
