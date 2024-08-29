@@ -100,44 +100,18 @@ def build_effect_index(data: dict) -> dict:
 
         affecting_rules = effect["affects"]
 
-        group = affecting_rules.get("group")
-        name = affecting_rules.get("name")
-
-        if not group:
-            continue
-
-        # If multiple groups, treat "affects" as "everything in these groups"
-        multiple_groups = isinstance(group, list)
-        if multiple_groups:
-            for g in group:
-                data_group = data.get(g)
-                if not data_group:
-                    continue
-
-                items = data_group.keys()
-                for i in items:
-                    utils.add_or_append(effect_index, i, key_seq)
-            continue
-
-        if not name:
-            data_group = data.get(group)
-            if not data_group:
+        for group, value in affecting_rules.items():
+            type_ = type(value)
+            if type_ is bool and value is True:
+                for item in data.get(group, {}).keys():
+                    utils.add_or_append(effect_index, item, key_seq)
+            elif type_ is str:
+                utils.add_or_append(effect_index, value, key_seq)
+            elif type_ is list:
+                for item in value:
+                    utils.add_or_append(effect_index, item, key_seq)
+            else:
                 continue
-
-            items = data_group.keys()
-            for i in items:
-                utils.add_or_append(effect_index, i, key_seq)
-            continue
-
-        if not isinstance(name, list):
-            name = [name]
-
-        for n in name:
-            data_item = utils.get_in(data, [group, n])
-            if not data_item:
-                continue
-
-            utils.add_or_append(effect_index, n, key_seq)
 
     return effect_index
 
