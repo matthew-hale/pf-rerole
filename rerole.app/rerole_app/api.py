@@ -84,7 +84,8 @@ def create_character():
     if not permission_to(token, "create_character"):
         return jsonify({"message": "Unauthorized."}), 401
     user_id = token.get("user_id")
-    data = character.calculate(character.default())
+    data = character.default()
+    character.calculate(data)
     character_id = db.create_character(user_id, data)
     return jsonify({
         "id": character_id,
