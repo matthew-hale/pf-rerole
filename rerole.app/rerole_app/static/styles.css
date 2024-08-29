@@ -75,6 +75,59 @@ body {
     display: inline-block;
 }
 
+.effect {
+    margin: 20px;
+    display: flex;
+    flex-direction: row;
+}
+.affects-groups {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    width: 100px;
+}
+
+.affects-group {
+    height: 30px;
+}
+
+.affects-names-menu {
+    display: none;
+    position: relative;
+    width: 300px;
+    height: 0px;
+    left: 100px;
+    top: -30px;
+}
+
+.affects-names-menu p {
+    margin: 0;
+}
+
+.affects-names-selected {
+    display: block;
+    width: 100%;
+    background-color: var(--bright-red);
+}
+
+.affects-names-selected p {
+    max-height: 30px;
+}
+
+.affects-names-dropdown {
+    display: none;
+    flex-direction: column;
+    z-index: 2;
+    position: relative;
+    background-color: var(--blue);
+    max-height: 200px;
+    overflow-y: scroll;
+}
+
+.affects-names-dropdown label:hover {
+    background-color: var(--cyan);
+}
+
 :is(h1, h2, h3, h4, h5, h6) {
     font-weight: normal;
     margin: 10px, 0, 10px, 0;

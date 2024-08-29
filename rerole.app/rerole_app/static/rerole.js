@@ -4,7 +4,6 @@ var hostname = "http://localhost:5000";
 var base_api_url = `${hostname}/api/v0`;
 
 var EFFECT_TYPES = [
-    "untyped",
     "alchemical",
     "armor",
     "bab",
@@ -26,6 +25,220 @@ var EFFECT_TYPES = [
     "size",
     "trait",
 ];
+
+
+class Effect {
+    static none = "(None)";
+    static all = "--ALL--";
+
+    constructor() {
+        this.root = document.createElement("div");
+        this.root.classList.add("effect");
+
+        this.value = document.createElement("input");
+        this.type = document.createElement("select");
+        this.magic = document.createElement("label");
+        this.group = document.createElement("div");
+
+        this.value.setAttribute("type", "text");
+        this.value.setAttribute("value", "0");
+
+        let magic_checkbox = document.createElement("input");
+        magic_checkbox.setAttribute("type", "checkbox");
+        this.magic.append(magic_checkbox, "magic");
+
+        this.group.classList.add("affects-groups");
+
+        let div;
+
+        div = document.createElement("div");
+        this.root.appendChild(div);
+        div.appendChild(this.value);
+
+        div = document.createElement("div");
+        this.root.appendChild(div);
+        div.appendChild(this.type);
+
+        div = document.createElement("div");
+        this.root.appendChild(div);
+        div.appendChild(this.magic);
+
+        div = document.createElement("div");
+        this.root.appendChild(div);
+        div.appendChild(this.group);
+
+        let option = document.createElement("option");
+        option.setAttribute("value", Effect.none);
+        option.innerHTML = Effect.none;
+        this.type.appendChild(option);
+        for (const t of EFFECT_TYPES) {
+            let option = document.createElement("option");
+            option.setAttribute("value", t);
+            option.innerHTML = t;
+            this.type.appendChild(option);
+        }
+    }
+    initGroups(groups, sheet) {
+        this.resetGroups();
+        for (const group of groups) {
+            let label = document.createElement("label");
+            label.setAttribute("name", group);
+            label.classList.add("affects-group");
+            this.group.appendChild(label);
+
+            let check = document.createElement("input");
+            check.setAttribute("type", "checkbox");
+            check.setAttribute("value", group);
+            check.setAttribute("onchange", "toggleMenu(this)");
+            label.appendChild(check);
+            label.append(group);
+
+            let names_menu = document.createElement("div");
+            names_menu.classList.add("affects-names-menu");
+            this.group.append(names_menu);
+
+            let selected = document.createElement("div");
+            selected.setAttribute("onclick", "toggleDropdown(this)");
+            selected.classList.add("affects-names-selected");
+            names_menu.appendChild(selected);
+
+            let selection = document.createElement("p");
+            selection.innerHTML = Effect.all;
+            selected.appendChild(selection);
+
+            let dropdown = document.createElement("div");
+            dropdown.classList.add("affects-names-dropdown");
+            names_menu.appendChild(dropdown);
+
+            let items = Object.keys(sheet[group]);
+            for (const item of items) {
+                let label = document.createElement("label");
+                label.setAttribute("name", item);
+
+                let check = document.createElement("input");
+                check.setAttribute("type", "checkbox");
+                check.setAttribute("value", item);
+                check.setAttribute("onchange", "checkboxChanged(this)");
+                label.append(check, item);
+
+                dropdown.appendChild(label);
+            }
+        }
+    }
+    getEffect() {
+        let effect = {};
+
+        let value = parseInt(this.value.value);
+        if (isNaN(value)) {
+            value = 0;
+        }
+        effect["value"] = value;
+
+        let type = this.type.value;
+        if (type !== Effect.none) {
+            effect["type"] = type;
+        }
+        let magic = this.magic.firstElementChild.checked;
+        if (magic) {
+            effect["magic"] = true;
+        }
+
+        let affects = {};
+        Array.from(this.group.querySelectorAll(".affects-group"))
+            .map((label) => label.firstChild)
+            .filter((input) => input.checked)
+            .forEach((input) => {
+                const group = input.value;
+                affects[group] = true;
+
+                const menu = input.parentElement.nextElementSibling;
+                const all_options = Array.from(menu.querySelectorAll("input"));
+                let selected_values = all_options
+                    .filter((input) => input.checked)
+                    .map((input) => input.value);
+
+                const none_selected = selected_values.length == 0;
+                const one_selected = selected_values.length == 1;
+                const all_selected = selected_values.length == all_options.length;
+                if (none_selected || all_selected) {
+                    return
+                }
+                if (one_selected) {
+                    selected_values = selected_values[0];
+                }
+                affects[group] = selected_values;
+            });
+        if (Object.keys(affects).length !== 0) {
+            effect["affects"] = affects;
+        }
+
+        return effect;
+    }
+    resetGroups() {
+        this.group.innerHTML = "";
+    }
+}
+
+function toggleMenu(obj) {
+    const state = obj.checked;
+    const menu = obj.parentElement.nextElementSibling;
+    if (state) {
+        menu.style.display = "block";
+    } else {
+        menu.style.display = "none";
+        const selected = menu.querySelector(".affects-names-selected");
+        toggleDropdown(selected, true);
+    }
+}
+
+function toggleDropdown(obj, hide = false) {
+    const parent = obj.parentElement;
+    const dropdown = parent.querySelector(".affects-names-dropdown");
+    if (hide) {
+        dropdown.style.display = "none";
+        return
+    }
+    let current_display = dropdown.style.display;
+    if (current_display === "none" || current_display === "") {
+        dropdown.style.display = "flex";
+    } else {
+        dropdown.style.display = "none";
+    }
+}
+
+function checkboxChanged(obj) {
+    //TODO: this is all obviously janky
+    const dropdown = obj.parentElement.parentElement;
+    const top_menu = dropdown.parentElement;
+    const output = top_menu.querySelector(".affects-names-selected").firstChild;
+
+    const all_inputs = Array.from(dropdown.querySelectorAll("input"));
+    let selected_inputs = all_inputs
+        .filter((input) => input.checked)
+        .map((input) => input.value);
+
+    if (selected_inputs.length == 0) {
+        output.innerHTML = Effect.all;
+        return
+    }
+    const one_selected = selected_inputs.length == 1;
+    const multiple_selected = selected_inputs.length > 1;
+    const all_selected = selected_inputs.length == all_inputs.length;
+
+    let output_string;
+    if (one_selected) {
+        output_string = selected_inputs[0];
+    }
+    if (multiple_selected) {
+        output_string = "(multiple selected)";
+    }
+    if (all_selected) {
+        output_string = Effect.all;
+    }
+
+    output.innerHTML = output_string;
+}
+
 
 async function get_character() {
     const endpoint = `${base_api_url}/characters/${C_ID}`;
@@ -276,11 +489,24 @@ function get_authorization_header() {
     return value;
 }
 
+function produce_effect() {
+    let effect = E.getEffect();
+    let output = document.getElementById("test-output");
+    output.innerHTML = JSON.stringify(effect);
+}
+
+var E = new Effect();
+
 window.onload = function() {
     get_character()
         .then((data) => {
             M.data = data;
             initialize_view(M, V);
             C.handler.call(C);
+
+            E.initGroups(["abilities", "saves", "skills"], data);
+
+            let effect_entry_root = document.getElementById("test");
+            effect_entry_root.appendChild(E.root);
         });
 }
