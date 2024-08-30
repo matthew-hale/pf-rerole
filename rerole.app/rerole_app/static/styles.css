@@ -26,6 +26,26 @@ body {
     font-size: 1.2em;
 }
 
+.edit-modal {
+    display: flex;
+    background-color: var(--white);
+    flex-direction: column;
+    border: 1px solid red;
+}
+
+.edit-modal .buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.effects {
+    background-color: var(--bright-magenta);
+    max-height: 200px;
+    overflow-y: scroll;
+    border: 1px solid blue;
+}
+
 .main-wrapper {
     max-width: 900px;
     margin-left: auto;
@@ -78,12 +98,14 @@ body {
 .effect {
     margin: 20px;
     display: flex;
+    height: 80px;
+    background-color: var(--bright-green);
     flex-direction: row;
 }
 .affects-groups {
     display: flex;
     flex-direction: column;
-    position: absolute;
+    position: relative;
     width: 100px;
 }
 
@@ -146,7 +168,7 @@ a:active {
     color: var(--green);
 }
 
-.buttons a, button {
+.buttons a, .buttons button {
     width: 150px;
     display: inline-block;
     font: bold;
@@ -166,7 +188,7 @@ a:active {
     cursor: pointer;
 }
 
-.buttons :hover {
+.buttons a:hover, .buttons button:hover {
     background-color: var(--cyan);
 }
 

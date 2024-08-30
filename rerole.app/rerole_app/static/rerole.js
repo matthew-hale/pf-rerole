@@ -27,11 +27,81 @@ var EFFECT_TYPES = [
 ];
 
 
+class EditFeat{
+    constructor(name, sheet = {}, data = {}) {
+        this.root = document.createElement("div");
+        this.root.classList.add("edit-modal");
+        this.root.classList.add("feat");
+
+        this.title = document.createElement("h3");
+        this.title.innerHTML = name;
+
+        this.description = document.createElement("label");
+        this.description.setAttribute("name", "description");
+
+        let span = document.createElement("span");
+        span.innerHTML = "Description:";
+        let input = document.createElement("textarea");
+        input.value = data.description;
+        this.description.append(span, input);
+
+        this.type = document.createElement("label");
+        this.type.setAttribute("name", "type");
+
+        span = document.createElement("span");
+        span.innerHTML = "Type:";
+        input = document.createElement("input");
+        input.setAttribute("type", "text");
+        this.type.append(span, input);
+
+        this.effects = document.createElement("label");
+        span = document.createElement("span");
+        span.innerHTML = "Effects:";
+        let div = document.createElement("div");
+        div.classList.add("effects");
+        this.effects.append(span, div);
+
+        const effects = data.effects || [];
+        for (const effect of effects) {
+            let e = new Effect(sheet, effect);
+            div.appendChild(e.root);
+        }
+
+        this.buttons = document.createElement("div");
+        this.buttons.classList.add("buttons");
+        let left_div = document.createElement("div");
+        let right_div = document.createElement("div");
+
+        let cancel_button = document.createElement("button");
+        cancel_button.setAttribute("type", "button");
+        cancel_button.innerHTML = "Cancel";
+        left_div.append(cancel_button);
+
+        let ok_button = document.createElement("button");
+        ok_button.setAttribute("type", "button");
+        ok_button.innerHTML = "Ok";
+        let delete_button = document.createElement("button");
+        delete_button.setAttribute("type", "button");
+        delete_button.innerHTML = "Delete";
+        right_div.append(ok_button, delete_button);
+
+        this.buttons.append(left_div, right_div);
+
+        this.root.append(
+            this.title,
+            this.description,
+            this.type,
+            this.effects,
+            this.buttons,
+        );
+    }
+}
+
 class Effect {
     static none = "(None)";
     static all = "--ALL--";
 
-    constructor() {
+    constructor(sheet = {}, effect_data = {}) {
         this.root = document.createElement("div");
         this.root.classList.add("effect");
 
@@ -41,10 +111,29 @@ class Effect {
         this.group = document.createElement("div");
 
         this.value.setAttribute("type", "text");
-        this.value.setAttribute("value", "0");
+        let value = effect_data.value || 0;
+        this.value.setAttribute("value", `${value}`);
+
+        let option = document.createElement("option");
+        option.setAttribute("value", Effect.none);
+        option.innerHTML = Effect.none;
+        this.type.appendChild(option);
+        for (const t of EFFECT_TYPES) {
+            let option = document.createElement("option");
+            option.setAttribute("value", t);
+            option.innerHTML = t;
+            this.type.appendChild(option);
+        }
+        let type = effect_data.type || Effect.none;
+        if (!type in EFFECT_TYPES) {
+            type = Effect.none;
+        }
+        this.type.value = type;
 
         let magic_checkbox = document.createElement("input");
         magic_checkbox.setAttribute("type", "checkbox");
+        let magic_state = effect_data.magic || false;
+        magic_checkbox.checked = magic_state;
         this.magic.append(magic_checkbox, "magic");
 
         this.group.classList.add("affects-groups");
@@ -67,62 +156,23 @@ class Effect {
         this.root.appendChild(div);
         div.appendChild(this.group);
 
-        let option = document.createElement("option");
-        option.setAttribute("value", Effect.none);
-        option.innerHTML = Effect.none;
-        this.type.appendChild(option);
-        for (const t of EFFECT_TYPES) {
-            let option = document.createElement("option");
-            option.setAttribute("value", t);
-            option.innerHTML = t;
-            this.type.appendChild(option);
-        }
-    }
-    initGroups(groups, sheet) {
-        this.resetGroups();
-        for (const group of groups) {
-            let label = document.createElement("label");
-            label.setAttribute("name", group);
-            label.classList.add("affects-group");
-            this.group.appendChild(label);
-
-            let check = document.createElement("input");
-            check.setAttribute("type", "checkbox");
-            check.setAttribute("value", group);
-            check.setAttribute("onchange", "toggleMenu(this)");
-            label.appendChild(check);
-            label.append(group);
-
-            let names_menu = document.createElement("div");
-            names_menu.classList.add("affects-names-menu");
-            this.group.append(names_menu);
-
-            let selected = document.createElement("div");
-            selected.setAttribute("onclick", "toggleDropdown(this)");
-            selected.classList.add("affects-names-selected");
-            names_menu.appendChild(selected);
-
-            let selection = document.createElement("p");
-            selection.innerHTML = Effect.all;
-            selected.appendChild(selection);
-
-            let dropdown = document.createElement("div");
-            dropdown.classList.add("affects-names-dropdown");
-            names_menu.appendChild(dropdown);
-
-            let items = Object.keys(sheet[group]);
-            for (const item of items) {
-                let label = document.createElement("label");
-                label.setAttribute("name", item);
-
-                let check = document.createElement("input");
-                check.setAttribute("type", "checkbox");
-                check.setAttribute("value", item);
-                check.setAttribute("onchange", "checkboxChanged(this)");
-                label.append(check, item);
-
-                dropdown.appendChild(label);
+        const affects = effect_data.affects || {};
+        const selected_groups = Object.keys(affects);
+        for (const group of ["abilities", "saves", "skills"]) {
+            const group_items = Object.keys(sheet[group]);
+            const group_is_selected = selected_groups.includes(group);
+            let selected_items = [];
+            if (group_is_selected) {
+                let value = affects[group];
+                if (typeof value === 'string' || value instanceof String) {
+                    selected_items = [value];
+                }
+                if (Array.isArray(value)) {
+                    selected_items = value;
+                }
             }
+            const affects_obj = new Affects(group, group_items, group_is_selected, selected_items);
+            this.group.append(affects_obj.label, affects_obj.menu);
         }
     }
     getEffect() {
@@ -174,69 +224,145 @@ class Effect {
 
         return effect;
     }
-    resetGroups() {
-        this.group.innerHTML = "";
+}
+
+class Affects {
+    constructor(group, items, group_selected = false, items_selected = []) {
+        this.groupName = group;
+
+        this.label = document.createElement("label");
+        this.label.classList.add("affects-group");
+
+        this.input = document.createElement("input");
+        this.input.setAttribute("type", "checkbox");
+        this.input.setAttribute("value", group);
+        this.input.checked = group_selected;
+        this.label.append(this.input);
+
+        this.input.addEventListener("change", this.toggleMenu.bind(this));
+
+        let span = document.createElement("span");
+        span.innerHTML = group;
+        this.label.append(span);
+
+        this.menu_obj = new NamesMenu(items, items_selected);
+        this.menu = this.menu_obj.root;
+
+        this.toggleMenu();
+    }
+    toggleMenu() {
+        const state = this.label.querySelector("input").checked;
+        if (state) {
+            this.menu.style.display = "block";
+        } else {
+            this.menu.style.display = "none";
+            this.menu_obj.toggleDisplay("", true);
+        }
+    }
+    getValue() {
+        const group_name = this.groupName;
+        const is_selected = this.input.checked;
+        if (!is_selected) {
+            return {};
+        }
+        let output = {};
+        output[group_name] = this.menu_obj.getSelectedValue()
+        return output;
     }
 }
 
-function toggleMenu(obj) {
-    const state = obj.checked;
-    const menu = obj.parentElement.nextElementSibling;
-    if (state) {
-        menu.style.display = "block";
-    } else {
-        menu.style.display = "none";
-        const selected = menu.querySelector(".affects-names-selected");
-        toggleDropdown(selected, true);
-    }
-}
+class NamesMenu {
+    static all = "--ALL--";
+    constructor(items, selected = []) {
+        this.root = document.createElement("div");
+        this.root.classList.add("affects-names-menu");
 
-function toggleDropdown(obj, hide = false) {
-    const parent = obj.parentElement;
-    const dropdown = parent.querySelector(".affects-names-dropdown");
-    if (hide) {
-        dropdown.style.display = "none";
-        return
-    }
-    let current_display = dropdown.style.display;
-    if (current_display === "none" || current_display === "") {
-        dropdown.style.display = "flex";
-    } else {
-        dropdown.style.display = "none";
-    }
-}
+        this.selected = document.createElement("div");
+        this.selected.classList.add("affects-names-selected");
+        let span = document.createElement("span");
+        span.innerHTML = NamesMenu.all;
+        this.selected.appendChild(span);
 
-function checkboxChanged(obj) {
-    //TODO: this is all obviously janky
-    const dropdown = obj.parentElement.parentElement;
-    const top_menu = dropdown.parentElement;
-    const output = top_menu.querySelector(".affects-names-selected").firstChild;
+        this.selected.addEventListener("click", this.toggleDisplay.bind(this));
 
-    const all_inputs = Array.from(dropdown.querySelectorAll("input"));
-    let selected_inputs = all_inputs
-        .filter((input) => input.checked)
-        .map((input) => input.value);
+        this.dropdown = document.createElement("div");
+        this.dropdown.classList.add("affects-names-dropdown");
 
-    if (selected_inputs.length == 0) {
-        output.innerHTML = Effect.all;
-        return
-    }
-    const one_selected = selected_inputs.length == 1;
-    const multiple_selected = selected_inputs.length > 1;
-    const all_selected = selected_inputs.length == all_inputs.length;
+        for (const item of items) {
+            let label = document.createElement("label");
+            label.setAttribute("name", item);
+            let input = document.createElement("input");
+            input.setAttribute("type", "checkbox");
+            input.setAttribute("value", item);
+            input.checked = false;
+            if (selected.includes(item)) {
+                input.checked = true;
+            }
+            let span = document.createElement("span");
+            span.innerHTML = item;
 
-    let output_string;
-    if (one_selected) {
-        output_string = selected_inputs[0];
-    }
-    if (multiple_selected) {
-        output_string = "(multiple selected)";
-    }
-    if (all_selected) {
-        output_string = Effect.all;
-    }
+            input.addEventListener("change", this.setValue.bind(this));
 
-    output.innerHTML = output_string;
+            label.append(input, span);
+            this.dropdown.appendChild(label);
+        }
+
+        this.setValue("");
+
+        this.root.append(this.selected, this.dropdown);
+    }
+    setValue(evt) {
+        const all_inputs = Array.from(this.dropdown.querySelectorAll("input"));
+        const selected_inputs = all_inputs
+            .filter((input) => input.checked);
+
+        if (selected_inputs.length == 0) {
+            this.selected.firstElementChild.innerHTML = NamesMenu.all;
+            return
+        }
+        const one_selected = selected_inputs.length == 1;
+        const multiple_selected = selected_inputs.length > 1;
+        const all_selected = selected_inputs.length == all_inputs.length;
+
+        let output_string;
+        if (one_selected) {
+            output_string = selected_inputs[0].value;
+        }
+        if (multiple_selected) {
+            output_string = "(multiple selected)";
+        }
+        if (all_selected) {
+            output_string = Effect.all;
+        }
+
+        this.selected.firstElementChild.innerHTML = output_string;
+    }
+    getSelectedValue() {
+        const all_inputs = Array.from(this.dropdown.querySelectorAll("input"));
+        const selected = all_inputs
+            .filter((input) => input.checked)
+            .map((input) => input.value);
+
+        if (selected.length == 0 || selected.length == all_inputs.length) {
+            return true;
+        }
+        if (selected.length == 1) {
+            return selected[0];
+        }
+        return selected;
+    }
+    toggleDisplay(evt, hide = false) {
+        if (hide) {
+            this.dropdown.style.display = "none";
+            return
+        }
+        let current_display = this.dropdown.style.display;
+        if (current_display === "none" || current_display === "") {
+            this.dropdown.style.display = "flex";
+        } else {
+            this.dropdown.style.display = "none";
+        }
+    }
 }
 
 
@@ -489,24 +615,11 @@ function get_authorization_header() {
     return value;
 }
 
-function produce_effect() {
-    let effect = E.getEffect();
-    let output = document.getElementById("test-output");
-    output.innerHTML = JSON.stringify(effect);
-}
-
-var E = new Effect();
-
 window.onload = function() {
     get_character()
         .then((data) => {
             M.data = data;
             initialize_view(M, V);
             C.handler.call(C);
-
-            E.initGroups(["abilities", "saves", "skills"], data);
-
-            let effect_entry_root = document.getElementById("test");
-            effect_entry_root.appendChild(E.root);
         });
 }
