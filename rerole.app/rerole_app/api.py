@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 
 from flask import Blueprint, jsonify, request, session, url_for, abort
 
-from rerole_lib import character
+from rerole_lib import Sheet
 from rerole_app import db
 
 api = Blueprint("api", __name__, url_prefix = "/api/v0")
@@ -84,8 +84,8 @@ def create_character():
     if not permission_to(token, "create_character"):
         return jsonify({"message": "Unauthorized."}), 401
     user_id = token.get("user_id")
-    data = character.default()
-    character.calculate(data)
+    data = Sheet()
+    data.calculate()
     character_id = db.create_character(user_id, data)
     return jsonify({
         "id": character_id,
@@ -119,10 +119,10 @@ def update_character(character_id: int):
     if not (update_this_character or update_any_character):
         abort(401)
 
-    data = request.json
+    data = Sheet(request.json)
     if data is None:
         return {"message": "Cannot update character with empty request body."}, 400
-    character.calculate(data)
+    data.calculate()
     db.update_character(character_id, data)
     return jsonify(data)
 

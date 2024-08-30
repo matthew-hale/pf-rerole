@@ -8,8 +8,6 @@ from flask import Blueprint, abort, redirect, render_template, request, session,
 from rerole_app import db
 from rerole_app import api
 
-from rerole_lib import character as c
-
 site = Blueprint("site", __name__, template_folder = "templates")
 
 OAUTH2_CONFIG = {
