@@ -1,6 +1,7 @@
 import json
 
-from rerole_lib import character as c, utils
+from rerole_lib import character as c
+from rerole_lib.utils import Dict
 
 def test_build_effect_index():
     with open("tests/character/test_data.json") as f:
@@ -30,23 +31,23 @@ def test_build_effect_index():
 
 def test_calculate():
     with open("tests/character/test_data.json") as f:
-        data = json.load(f)
+        data = Dict(json.load(f))
     c.calculate(data)
 
-    assert utils.get_in(data, ["skills", "climb", "modifier"]) == 11
-    assert utils.get_in(data, ["saves", "will", "modifier"]) == 11
+    assert data.get_in(["skills", "climb", "modifier"]) == 11
+    assert data.get_in(["saves", "will", "modifier"]) == 11
 
 def test_antimagic():
     with open("tests/character/test_data.json") as f:
-        data = json.load(f)
+        data = Dict(json.load(f))
 
     c.calculate(data)
-    assert utils.get_in(data, ["skills", "acrobatics", "modifier"]) == 9
+    assert data.get_in(["skills", "acrobatics", "modifier"]) == 9
 
     data["antimagic_field"] = True
     c.calculate(data)
-    assert utils.get_in(data, ["skills", "acrobatics", "modifier"]) == 5
+    assert data.get_in(["skills", "acrobatics", "modifier"]) == 5
 
     data["antimagic_field"] = False
     c.calculate(data)
-    assert utils.get_in(data, ["skills", "acrobatics", "modifier"]) == 9
+    assert data.get_in(["skills", "acrobatics", "modifier"]) == 9

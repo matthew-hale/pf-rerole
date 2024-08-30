@@ -1,4 +1,4 @@
-from rerole_lib import character as c, skill, utils
+from rerole_lib import character as c, skill
 
 def test_skill_calculation():
     """

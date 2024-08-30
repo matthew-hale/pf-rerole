@@ -1,7 +1,7 @@
-from rerole_lib import utils
+from rerole_lib.utils import Dict
 
 def test_get_in():
-    data = {
+    data = Dict({
         "a": {
             1: {
                 "apple": 1,
@@ -22,17 +22,17 @@ def test_get_in():
         },
         "c": {
         },
-    }
+    })
 
-    assert utils.get_in(data, ["a", 1, "apple"]) == 1
-    assert utils.get_in(data, ["a", 2]) == {"chestnut": 3}
-    assert utils.get_in(data, ["a", 3]) == {}
-    assert utils.get_in(data, ["a", 3], "default") == {}
-    assert utils.get_in(data, ["a", 4]) == None
-    assert utils.get_in(data, ["a", 4], "default") == "default"
-    assert utils.get_in(data, ["a", 4, "dragonfruit"]) == None
-    assert utils.get_in(data, ["a", 4, "dragonfruit"], "default") == "default"
-    assert utils.get_in(data, ["c"]) == {}
-    assert utils.get_in(data, ["c"], "default") == {}
-    assert utils.get_in(data, ["d"]) == None
-    assert utils.get_in(data, ["d"], "default") == "default"
+    assert data.get_in(["a", 1, "apple"]) == 1
+    assert data.get_in(["a", 2]) == {"chestnut": 3}
+    assert data.get_in(["a", 3]) == {}
+    assert data.get_in(["a", 3], "default") == {}
+    assert data.get_in(["a", 4]) == None
+    assert data.get_in(["a", 4], "default") == "default"
+    assert data.get_in(["a", 4, "dragonfruit"]) == None
+    assert data.get_in(["a", 4, "dragonfruit"], "default") == "default"
+    assert data.get_in(["c"]) == {}
+    assert data.get_in(["c"], "default") == {}
+    assert data.get_in(["d"]) == None
+    assert data.get_in(["d"], "default") == "default"

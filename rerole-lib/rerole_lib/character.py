@@ -2,7 +2,7 @@ from rerole_lib import ability
 from rerole_lib import effect
 from rerole_lib import save
 from rerole_lib import skill
-from rerole_lib import utils
+from rerole_lib.utils import Dict
 
 def default() -> dict:
     """Create a new blank character sheet"""
@@ -14,6 +14,7 @@ def default() -> dict:
 
 def calculate(data: dict) -> dict:
     """Calulate all relevant modifiers, returning a new dict."""
+    data = Dict(data)
     antimagic_field_is_on = data.get("antimagic_field", False)
     if antimagic_field_is_on:
         activate_antimagic_field(data)
@@ -32,7 +33,7 @@ def calculate(data: dict) -> dict:
         save_effects = resolve_effect_index(data, k)
         save_effect_total = effect.total(save_effects)
 
-        save_ability = utils.get_in(data, ["abilities", v.get("ability")], {})
+        save_ability = data.get_in(["abilities", v.get("ability")], default={})
         save_ability_modifier = save_ability.get("modifier", 0)
         save_ability_penalty = ability.penalty(save_ability)
 
@@ -43,7 +44,7 @@ def calculate(data: dict) -> dict:
         skill_effects = resolve_effect_index(data, k)
         skill_effect_total = effect.total(skill_effects)
 
-        skill_ability = utils.get_in(data, ["abilities", v.get("ability")], {})
+        skill_ability = data.get_in(["abilities", v.get("ability")], default={})
         skill_ability_modifier = skill_ability.get("modifier", 0)
         skill_ability_penalty = ability.penalty(skill_ability)
 
@@ -53,22 +54,23 @@ def calculate(data: dict) -> dict:
 
 def activate_antimagic_field(data: dict):
     """Apply the proper suppression state to each magical effect present."""
-    active_magic_effect_key_seqs = utils.search(data, active_magic_effect)
+    data = Dict(data)
+    active_magic_effect_key_seqs = data.search(active_magic_effect)
     if not active_magic_effect_key_seqs:
         return
 
     for seq in active_magic_effect_key_seqs:
-        e = utils.get_in(data, seq, {})
+        e = data.get_in(seq, default={})
         effect.toggle_antimagic_field(e)
 
 def deactivate_antimagic_field(data: dict):
     """Like activate_antimagic_field, but in reverse."""
-    inactive_magic_effect_key_seqs = utils.search(data, inactive_magic_effect)
+    inactive_magic_effect_key_seqs = data.search(inactive_magic_effect)
     if not inactive_magic_effect_key_seqs:
         return
 
     for seq in inactive_magic_effect_key_seqs:
-        e = utils.get_in(data, seq, {})
+        e = data.get_in(seq, default={})
         effect.toggle_antimagic_field(e)
 
 
@@ -87,14 +89,15 @@ def build_effect_index(data: dict) -> dict:
 
     In practice, things which have effects applied to them generally have globally unique names, as they're things like abilities, saving throws, skills, and various built-in rolls, like AC and spellcasting concentration checks.
     """
-    effects = utils.search(data, lambda x: isinstance(x, dict) and "affects" in x.keys())
+    data = Dict(data)
+    effects = data.search(lambda x: isinstance(x, dict) and "affects" in x.keys())
 
     if not effects:
         return {}
 
-    effect_index = {}
+    effect_index = Dict()
     for key_seq in effects:
-        effect = utils.get_in(data, key_seq)
+        effect = data.get_in(key_seq)
         if not effect:
             continue
 
@@ -104,12 +107,12 @@ def build_effect_index(data: dict) -> dict:
             type_ = type(value)
             if type_ is bool and value is True:
                 for item in data.get(group, {}).keys():
-                    utils.add_or_append(effect_index, item, key_seq)
+                    effect_index.add_or_append(item, key_seq)
             elif type_ is str:
-                utils.add_or_append(effect_index, value, key_seq)
+                effect_index.add_or_append(value, key_seq)
             elif type_ is list:
                 for item in value:
-                    utils.add_or_append(effect_index, item, key_seq)
+                    effect_index.add_or_append(item, key_seq)
             else:
                 continue
 
@@ -117,11 +120,12 @@ def build_effect_index(data: dict) -> dict:
 
 def resolve_effect_index(data: dict, name: str) -> list[dict]:
     """Return a list of effects that are affecting the named item."""
-    effect_key_seqs = utils.get_in(data, ["effect_index", name])
+    data = Dict(data)
+    effect_key_seqs = data.get_in(["effect_index", name])
     if not effect_key_seqs:
         return []
 
-    return [utils.get_in(data, seq) for seq in effect_key_seqs]
+    return [data.get_in(seq) for seq in effect_key_seqs]
 
 
 def active_magic_effect(e: dict) -> bool:
