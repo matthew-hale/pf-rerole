@@ -9,7 +9,7 @@ packages = [{include = "rerole_app"}]
 [tool.poetry.dependencies]
 python = "^3.12"
 flask = "3.0.3"
-rerole-lib = "0.6.0"
+rerole-lib = "0.7.0"
 requests = "2.32.3"
 bcrypt = "4.2.0"
 pyjwt = "2.9.0"

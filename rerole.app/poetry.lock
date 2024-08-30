@@ -53,13 +53,13 @@ files = [
 
 [[package]]
 name = "certifi"
-version = "2024.7.4"
+version = "2024.8.30"
 description = "Python package for providing Mozilla's CA Bundle."
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "certifi-2024.7.4-py3-none-any.whl", hash = "sha256:c198e21b1289c2ab85ee4e67bb4b4ef3ead0892059901a8d5b622f24a1101e90"},
-    {file = "certifi-2024.7.4.tar.gz", hash = "sha256:5a1e7645bc0ec61a09e26c36f6106dd4cf40c6db3a1fb6352b0244e7fb057c7b"},
+    {file = "certifi-2024.8.30-py3-none-any.whl", hash = "sha256:922820b53db7a7257ffbda3f597266d435245903d80737e34f8a45ff3e3230d8"},
+    {file = "certifi-2024.8.30.tar.gz", hash = "sha256:bec941d2aa8195e248a60b31ff9f0558284cf01a52591ceda73ea9afffd69fd9"},
 ]
 
 [[package]]
@@ -356,13 +356,13 @@ use-chardet-on-py3 = ["chardet (>=3.0.2,<6)"]
 
 [[package]]
 name = "rerole-lib"
-version = "0.6.0"
+version = "0.7.0"
 description = "A library for interacting with Pathfinder 1E character sheet data."
 optional = false
 python-versions = "<4.0,>=3.12"
 files = [
-    {file = "rerole_lib-0.6.0-py3-none-any.whl", hash = "sha256:e5ffe2648331f47e535b4941e21fa1519f4aa114af1ffbfcc8dbdccc2230a171"},
-    {file = "rerole_lib-0.6.0.tar.gz", hash = "sha256:a07b1304ce600662d1cb142d751366bbc4249f4899b8d54ac37e4b25b73ac759"},
+    {file = "rerole_lib-0.7.0-py3-none-any.whl", hash = "sha256:9b5d620e99cc9aef21cc8122283db50c257f62e0f1d73e69ea33c80bc841e6d8"},
+    {file = "rerole_lib-0.7.0.tar.gz", hash = "sha256:2dcee640893c97b10b5e70af3b2edbe3b369b5dce6423f12ec4029af44a89d28"},
 ]
 
 [[package]]
@@ -402,4 +402,4 @@ watchdog = ["watchdog (>=2.3)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "20760fa3dbf9ec5220c1ea48b14c4613cf7cc99254b39bb7b4e4a79312e8a761"
+content-hash = "86550431f094910d86d4518fbec3b175694e66756db2737e8d02f26bb5853ed7"
