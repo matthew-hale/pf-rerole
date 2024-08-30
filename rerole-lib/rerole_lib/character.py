@@ -4,128 +4,159 @@ from rerole_lib import save
 from rerole_lib import skill
 from rerole_lib.utils import Dict
 
-def default() -> dict:
-    """Create a new blank character sheet"""
-    return {
-        "abilities": ability.default(),
-        "saves": save.default(),
-        "skills": skill.default(),
-    }
+class Sheet(Dict):
+    """`Sheet` is an extention of a standard dictionary that provides some useful methods for working with character sheet data."""
 
-def calculate(data: dict) -> dict:
-    """Calulate all relevant modifiers, returning a new dict."""
-    data = Dict(data)
-    antimagic_field_is_on = data.get("antimagic_field", False)
-    if antimagic_field_is_on:
-        activate_antimagic_field(data)
-    else:
-        deactivate_antimagic_field(data)
+    def __init__(self, *args, **kwargs):
+        if not args and not kwargs:
+            super().__init__({
+                "abilities": ability.default(),
+                "saves": save.default(),
+                "skills": skill.default(),
+            })
+            return
+        super().__init__(*args, **kwargs)
 
-    update_effect_index(data)
-    effect_index = data.get("effect_index", {})
+    def calculate(self):
+        """Calulate all relevant character modifiers; modifies in place.
 
-    for k, v in data.get("abilities", {}).items():
-        ability_effects = resolve_effect_index(data, k)
-        effect_total = effect.total(ability_effects)
-        ability.calculate(v, effect_total)
+        `calculate` is the main method of the `Sheet` class. Pretty much all relevant functionality is baked into `calculate`, such that it's the only method most users should ever have to call directly.
 
-    for k, v in data.get("saves", {}).items():
-        save_effects = resolve_effect_index(data, k)
-        save_effect_total = effect.total(save_effects)
+        `calculate` performs the following operations:
 
-        save_ability = data.get_in(["abilities", v.get("ability")], default={})
-        save_ability_modifier = save_ability.get("modifier", 0)
-        save_ability_penalty = ability.penalty(save_ability)
+        * Sets the proper state for all magical effects, based on the presence or absence of an antimagic field
+        * Creates/updates the effect index
+        * Calculates the modifiers of each item within the following groups:
+            - Abilities
+            - Saves
+            - Skills
+        """
 
-        effect_total = save_effect_total + save_ability_modifier + save_ability_penalty
-        save.calculate(v, effect_total)
+        antimagic_field_state = self.get("antimagic_field", False)
+        self.apply_antimagic_field(antimagic_field_state)
 
-    for k, v in data.get("skills", {}).items():
-        skill_effects = resolve_effect_index(data, k)
-        skill_effect_total = effect.total(skill_effects)
+        self.build_effect_index()
 
-        skill_ability = data.get_in(["abilities", v.get("ability")], default={})
-        skill_ability_modifier = skill_ability.get("modifier", 0)
-        skill_ability_penalty = ability.penalty(skill_ability)
+        calculate_function = {
+            "abilities": ability.calculate,
+            "saves": save.calculate,
+            "skills": skill.calculate,
+        }
+        for group in calculate_function:
+            for name, item in self.get(group, {}).items():
+                # Some things have an ability applied; if this thing does, take that
+                # into account here.
+                ability_total = 0
+                if "ability" in item.keys():
+                    a = self.get_in(["abilities", item["ability"]], default={})
+                    ability_mod = a.get("modifier", 0)
+                    ability_penalty = ability.penalty(a)
+                    ability_total = ability_mod + ability_penalty
 
-        effect_total = skill_effect_total + skill_ability_modifier + skill_ability_penalty
-        skill.calculate(v, effect_total)
+                effects = self.get_effects(name)
+                effect_total = effect.total(effects) + ability_total
+                calculate_function[group](item, effect_total)
 
+    def get_effects(self, name: str) -> list[dict]:
+        """Searches the effect index, returning the appropriate list of effects for `name`."""
+        effect_key_seqs = self.get_in(["effect_index", name], default=[])
+        return [self.get_in(seq) for seq in effect_key_seqs]
 
-def activate_antimagic_field(data: dict):
-    """Apply the proper suppression state to each magical effect present."""
-    data = Dict(data)
-    active_magic_effect_key_seqs = data.search(active_magic_effect)
-    if not active_magic_effect_key_seqs:
-        return
+    def get_effect_sources(self, name: str) -> dict:
+        """Searches the effect index, returning the appropriate list of effect sources for `name`.
 
-    for seq in active_magic_effect_key_seqs:
-        e = data.get_in(seq, default={})
-        effect.toggle_antimagic_field(e)
+        Note the difference from `get_effects`: an _effect_ is distinct from an effect _source_.
 
-def deactivate_antimagic_field(data: dict):
-    """Like activate_antimagic_field, but in reverse."""
-    inactive_magic_effect_key_seqs = data.search(inactive_magic_effect)
-    if not inactive_magic_effect_key_seqs:
-        return
+        Some effect sources contain multiple effects. Consider the following:
 
-    for seq in inactive_magic_effect_key_seqs:
-        e = data.get_in(seq, default={})
-        effect.toggle_antimagic_field(e)
+            "protection from evil": {
+                "description": "Does a whole lot of stuff.",
+                "1": {
+                    "value": 2,
+                    "type": "deflection",
+                    "affects": {
+                        "saves": True,
+                    },
+                },
+                "2": {
+                    "value": 2,
+                    "type": "resistance",
+                    "affects": {
+                        "saves": True,
+                    },
+                },
+            },
 
+        If I call `.get_effects("fortitude")`, I'll get this:
 
-def update_effect_index(data: dict):
-    """Add an up-to-date effect index to the provided character dict."""
-    effect_index = build_effect_index(data)
-    if not effect_index:
-        return
+            [
+                {
+                    "value": 2,
+                    "type": "resistance",
+                    "affects": {
+                        "saves": True,
+                    },
+                }
+            ]
 
-    data["effect_index"] = effect_index
+        While useful for performing calculations, sometimes what I actually want is the effect source: the actual spells, feats, etc. being applied. To do this, I have to move up a couple levels in the tree, and return a dictionary containing only the effect sources.
+        """
+        pass
 
-def build_effect_index(data: dict) -> dict:
-    """Finds all effects in character data, and builds an index of things->effect key sequences.
+    def apply_antimagic_field(self, on: bool = False):
+        """Apply the proper state to all magical effects, depending on their previous state and the value of the `state` argument; modifies in place.
 
-    This function assumes that names of things are globally unique. If a character has an ability called 'strength' and a skill called 'strength', the resulting effect index will squish them together into a single entry.
+        Note that this method does not directly interact whatsoever with the "antimagic_field" key: `apply_antimagic_field` receives a boolean value, then applies the proper state to all relevant magical effects.
+        """
+        search_fn = {
+            True: active_magic_effect,
+            False: inactive_magic_effect,
+        }.get(on)
 
-    In practice, things which have effects applied to them generally have globally unique names, as they're things like abilities, saving throws, skills, and various built-in rolls, like AC and spellcasting concentration checks.
-    """
-    data = Dict(data)
-    effects = data.search(lambda x: isinstance(x, dict) and "affects" in x.keys())
+        effect_key_seqs = self.search(search_fn)
+        if not effect_key_seqs:
+            return
 
-    if not effects:
-        return {}
+        for seq in effect_key_seqs:
+            e = self.get_in(seq, default={})
+            effect.toggle_antimagic_field(e)
 
-    effect_index = Dict()
-    for key_seq in effects:
-        effect = data.get_in(key_seq)
-        if not effect:
-            continue
+    def build_effect_index(self):
+        """Finds all effects, and builds an index of `affected_thing->effect key seq`.
 
-        affecting_rules = effect["affects"]
+        This function assumes that names of things are globally unique. If a character has an ability called "strength" and a skill called "strength", the resulting effect index will squish them together into a single entry.
 
-        for group, value in affecting_rules.items():
-            type_ = type(value)
-            if type_ is bool and value is True:
-                for item in data.get(group, {}).keys():
-                    effect_index.add_or_append(item, key_seq)
-            elif type_ is str:
-                effect_index.add_or_append(value, key_seq)
-            elif type_ is list:
-                for item in value:
-                    effect_index.add_or_append(item, key_seq)
-            else:
+        In practice, things which have effects applied to them generally have globally unique names, as they're things like abilities, saving throws, skills, and various built-in rolls, like AC and spellcasting concentration checks.
+        """
+        if "effect_index" in self:
+            del self["effect_index"]
+
+        effects = self.search(lambda x: isinstance(x, dict) and "affects" in x.keys())
+        if not effects:
+            return
+
+        effect_index = Dict()
+        for key_seq in effects:
+            effect = self.get_in(key_seq)
+            if not effect:
                 continue
 
-    return effect_index
+            affecting_rules = effect["affects"]
 
-def resolve_effect_index(data: dict, name: str) -> list[dict]:
-    """Return a list of effects that are affecting the named item."""
-    data = Dict(data)
-    effect_key_seqs = data.get_in(["effect_index", name])
-    if not effect_key_seqs:
-        return []
+            for group, value in affecting_rules.items():
+                type_ = type(value)
+                if type_ is bool and value is True:
+                    for item in self.get(group, {}).keys():
+                        effect_index.add_or_append(item, key_seq)
+                elif type_ is str:
+                    effect_index.add_or_append(value, key_seq)
+                elif type_ is list:
+                    for item in value:
+                        effect_index.add_or_append(item, key_seq)
+                else:
+                    continue
 
-    return [data.get_in(seq) for seq in effect_key_seqs]
+        self["effect_index"] = effect_index
 
 
 def active_magic_effect(e: dict) -> bool:

@@ -1,13 +1,14 @@
 import json
 
-from rerole_lib import character as c
+from rerole_lib import Sheet
 from rerole_lib.utils import Dict
 
 def test_build_effect_index():
     with open("tests/character/test_data.json") as f:
-        data = json.load(f)
+        data = Sheet(json.load(f))
 
-    effect_index = c.build_effect_index(data)
+    data.build_effect_index()
+    effect_index = data.get("effect_index")
 
     assert effect_index["strength"] == [
         ["spells", "mighty strength"],
@@ -31,23 +32,23 @@ def test_build_effect_index():
 
 def test_calculate():
     with open("tests/character/test_data.json") as f:
-        data = Dict(json.load(f))
-    c.calculate(data)
+        data = Sheet(json.load(f))
+    data.calculate()
 
     assert data.get_in(["skills", "climb", "modifier"]) == 11
     assert data.get_in(["saves", "will", "modifier"]) == 11
 
 def test_antimagic():
     with open("tests/character/test_data.json") as f:
-        data = Dict(json.load(f))
+        data = Sheet(json.load(f))
 
-    c.calculate(data)
+    data.calculate()
     assert data.get_in(["skills", "acrobatics", "modifier"]) == 9
 
     data["antimagic_field"] = True
-    c.calculate(data)
+    data.calculate()
     assert data.get_in(["skills", "acrobatics", "modifier"]) == 5
 
     data["antimagic_field"] = False
-    c.calculate(data)
+    data.calculate()
     assert data.get_in(["skills", "acrobatics", "modifier"]) == 9
