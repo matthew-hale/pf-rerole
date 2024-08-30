@@ -11,19 +11,19 @@ For sample data, peruse the .json files in any of the test directories.
 ```
 import json
 
-from rerole_lib import character
+from rerole_lib import Sheet
 
 with open("tests/character/test_data.json") as f:
-    data = json.load()
+    data = Sheet(json.load())
 
 print(data["skills"]["climb"])
 """
 {'ranks': 2, 'class': True, 'ability': 'strength'}
 """
 
-calculated = character.calculate(data)
+data.calculate()
 
-print(calculated["skills"]["climb"])
+print(data["skills"]["climb"])
 """
 {'ranks': 2, 'class': True, 'ability': 'strength', 'modifier': 11}
 """
