@@ -80,51 +80,10 @@ class Dict(dict):
         return output
 
     def search(self, fn, path=[]) -> list | None:
-        """Return a list of key sequences whose values return True when `fn` is applied to them.
-
-        Somewhat like `filter`, except it returns the "locations" of the matching values within the input dictionary.
-
-        E.g:
-
-        >>> data = Dict({
-        ...     "a": 1,
-        ...     "b": 2,
-        ...     "c": {
-        ...         "apple": True,
-        ...         "banana": False,
-        ...         "pear": True,
-        ...     },
-        ...     "d": True,
-        ...     "e": {
-        ...         "f": {
-        ...             "coconut": True,
-        ...         },
-        ...     },
-        ... })
-        >>>
-        >>> data.search(lambda x: x is True)
-        [['c', 'apple'], ['c', 'pear'], ['d'], ['e', 'f', 'coconut']]
-        """
+        """Provides `utils.search` as a Dict method."""
         if not self:
             return None
-
-        matching_key_sequences = []
-        for k, v in self.items():
-            current_path = list(path)
-            current_path.append(k)
-
-            v_matches_fn = fn(v)
-            v_has_children = isinstance(v, dict)
-
-            if v_matches_fn:
-                matching_key_sequences.append(current_path)
-            if v_has_children:
-                results = Dict(v).search(fn, current_path)
-                if results:
-                    for x in results:
-                        matching_key_sequences.append(x)
-
-        return matching_key_sequences
+        return search(self, fn)
 
     def add_or_append(self, key, val):
         """Append val to data[key], initializing with data[key] = [] if needed.
@@ -134,3 +93,104 @@ class Dict(dict):
         if key not in self.keys():
             self[key] = []
         self[key].append(val)
+
+
+def search(data, fn, path=[]):
+    """Return a list of matching key sequences in `data`, where fn(data.get_in(seq)) is True.
+
+    Somewhat like `filter`, except it returns the "locations" of the matching values within the input dictionary. These "locations" can then be used in `.get_in()` to find the associated values, if desired.
+
+    Example:
+
+        data = {
+            "a": 1,
+            "b": [
+                {
+                    "cat": True,
+                    "dog": False,
+                },
+                {
+                    "cat": False,
+                    "dog": True,
+                },
+            ],
+            "c": {
+                "apple": True,
+                "banana": False,
+                "pear": True,
+            },
+            "d": True,
+            "e": {
+                "f": {
+                    "coconut": True,
+                },
+            },
+        })
+
+        data.search(lambda x: x is True)
+        [
+            ['b', 0, 'cat'],
+            ['b', 1, 'dog'],
+            ['c', 'apple'],
+            ['c', 'pear'],
+            ['d'],
+            ['e', 'f', 'coconut']
+        ]
+    """
+    if not data:
+        return None
+
+    matching_key_sequences = []
+
+    try:
+        for key, val in data.items():
+            current_path = list(path)
+            current_path.append(key)
+
+            try:
+                _ = [x for x in val]
+                val_has_children = True
+            except:
+                val_has_children = False
+
+            val_has_no_children = not val_has_children
+            val_matches = fn(val)
+
+            if val_matches:
+                matching_key_sequences.append(current_path)
+            if val_has_no_children:
+                continue
+
+            results = search(val, fn, current_path)
+            if not results:
+                continue
+
+            for match in results:
+                matching_key_sequences.append(match)
+        return matching_key_sequences
+    except AttributeError:
+        pass # It's a list
+
+    for idx, val in enumerate(data):
+        current_path = list(path)
+        current_path.append(idx)
+
+        try:
+            _ = [x for x in value]
+            val_has_children = True
+        except:
+            val_has_children = False
+
+        val_has_no_children = not val_has_children
+        val_matches = fn(val)
+
+        if val_matches:
+            matching_key_sequences.append(current_path)
+        if val_has_no_children:
+            continue
+        results = search(value, fn, current_path)
+        if not results:
+            continue
+        for match in results:
+            matching_key_sequences.append(match)
+    return matching_key_sequences
