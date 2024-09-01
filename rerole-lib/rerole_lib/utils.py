@@ -5,44 +5,40 @@ class Dict(dict):
     def get_in(self, key_seq: list, default=None):
         """A la Clojure's `get-in`; like .get, but uses a sequence of keys.
 
-        This function mimics Clojure's `get-in` function. Provide it with a dictionary, a sequence of keys, and an optional default value, and it will return either the specified nested dictionary value, or the default.
+        This function mimics Clojure's `get-in` function. Provide it with a sequence of keys and an optional default value, and it will return either the specified nested value, or the default.
 
-        For example:
+        Example:
 
-        >>> data = Dict({
-        ...     "a": {
-        ...         1: {
-        ...             "apple": "tasty",
-        ...         },
-        ...     },
-        ... })
-        >>> data.get_in(["a", 1, "apple"])
-        'tasty'
-        >>>
-        >>> data.get_in(["a", 1])
-        {'apple': 'tasty'}
-        >>>
-        >>> data.get_in(["a", 1, "banana"]) # returns None
-        >>> data.get_in(["a", 2, "banana"]) # returns None
-        >>> data.get_in(["a", 2])           # returns None
-        >>> data.get_in(["b"])              # returns None
-        >>>
-        >>> data.get_in(["a", 1, "banana"], default={})
-        {}
-        >>>
+            data = Dict({
+                "a": {
+                    1: {
+                        "apple": "tasty",
+                    },
+                },
+            })
+            data.get_in(["a", 1, "apple"])
+            # 'tasty'
 
-        The default value of `None` makes `get_in` behave like Python's own `.get()` method for dictionaries. It would have been more personally useful to set the default to `{}`, but I wanted to stick to the normal language behavior as much as possible.
+            data.get_in(["a", 1])
+            # {'apple': 'tasty'}
+
+            data.get_in(["a", 1, "banana"]) # returns None
+            data.get_in(["a", 2, "banana"]) # returns None
+            data.get_in(["a", 2])           # returns None
+            data.get_in(["b"])              # returns None
+
+            data.get_in(["a", 1, "banana"], default={})
+            # {}
+
+        Note that Python's dict and list types do not implement a common interface for a safe "get" operation. Whereas in Clojure, a call to `get-in` on a list of dicts of lists of dicts would "just work," it would not normally work in Python.
+
+        The default value of `None` for the `default` parameter makes `get_in` behave like Python's own `.get()` method for dictionaries. It would have been more personally useful to set the default to `{}`, but I wanted to stick to the normal language behavior as much as possible.
 
         One scenario that this function trips up on is when `None` is a possible valid value. I think it should basically never be a valid value, so I don't really care to fix this, but beware:
 
-        >>> data
-        {'a': {1: {'apple': 'tasty'}}}
-        >>> data["a"][1]["cucumber"] = None
-        >>> data
-        {'a': {1: {'apple': 'tasty', 'cucumber': None}}}
-        >>>
-        >>> data.get_in(["a", 1, "cucumber"], default="pickles")
-        'pickles'
+            data["a"][1]["cucumber"] = None
+            data.get_in(["a", 1, "cucumber"], default="pickles")
+            # 'pickles'
         """
         if not key_seq:
             return default
