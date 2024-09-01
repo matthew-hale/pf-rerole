@@ -60,3 +60,16 @@ def test_get_in():
     assert data.get_in(["e", "stuff", 1, "lime"]) == 40
     assert data.get_in(["e", "stuff", 2]) == None
     assert data.get_in(["e", "stuff", 2, "apple"]) == None
+
+def test_search():
+    def has_apple(x):
+        try:
+            keys = x.keys()
+        except (AttributeError):
+            return False
+        else:
+            return "apple" in keys
+    assert data.search(has_apple) == [
+        ["a", 1],
+        ["e", "stuff", 0]
+    ]
