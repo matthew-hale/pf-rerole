@@ -53,92 +53,119 @@
     },
     "spells": {
         "mighty strength": {
-            "value": 8,
-            "type": "enhancement",
+            "description": "Gives big strength.",
             "magic": true,
             "state": "active",
-            "affects": {
-                "abilities": [
-                    "strength"
-                ]
-            }
+            "effects": [
+                {
+                    "value": 8,
+                    "type": "enhancement",
+                    "affects": {
+                        "abilities": [
+                            "strength"
+                        ]
+                    }
+                }
+            ]
         },
         "general skill buff": {
             "description": "+1 bonus to all skills.",
-            "1": {
-                "value": 1,
-                "magic": true,
-                "state": "active",
-                "affects": {
-                    "skills": true
+            "magic": true,
+            "state": "active",
+            "effects": [
+                {
+                    "value": 1,
+                    "affects": {
+                        "skills": true
+                    }
                 }
-            }
+            ]
         },
         "Sacred Oath": {
             "description": "This spell gives a sacred bonus to the Will save, Diplomacy, and Knowledge (Religion), and an additional enhancement bonus to Constitution.",
-            "1": {
-                "value": 2,
-                "type": "sacred",
-                "magic": true,
-                "state": "active",
-                "affects": {
-                    "saves": "will",
-                    "skills": [
-                        "diplomacy",
-                        "knowledge (religion)"
-                    ]
+            "magic": true,
+            "state": "active",
+            "effects": [
+                {
+                    "value": 2,
+                    "type": "sacred",
+                    "affects": {
+                        "saves": "will",
+                        "skills": [
+                            "diplomacy",
+                            "knowledge (religion)"
+                        ]
+                    }
+                },
+                {
+                    "value": 4,
+                    "type": "enhancement",
+                    "affects": {
+                        "abilities": "constitution"
+                    }
                 }
-            },
-            "2": {
-                "value": 4,
-                "type": "enhancement",
-                "magic": true,
-                "state": "active",
-                "affects": {
-                    "abilities": "constitution"
-                }
-            }
+            ]
         }
     },
     "feats": {
         "skill focus (acrobatics)": {
-            "value": 3,
-            "affects": {
-                "skills": "acrobatics"
-            }
+            "effects": [
+                {
+                    "value": 3,
+                    "affects": {
+                        "skills": "acrobatics"
+                    }
+                }
+            ]
         },
         "iron will": {
-            "value": 2,
-            "affects": {
-                "saves": "will"
-            }
+            "effects": [
+                {
+                    "value": 2,
+                    "affects": {
+                        "saves": "will"
+                    }
+                }
+            ]
         }
     },
     "equipment": {
         "belt of stronk": {
             "description": "more stronk",
-            "value": 4,
-            "magic": true,
-            "type": "enhancement",
-            "affects": {
-                "abilities": "strength"
-            }
+            "effects": [
+                {
+                    "value": 4,
+                    "magic": true,
+                    "type": "enhancement",
+                    "affects": {
+                        "abilities": "strength"
+                    }
+                }
+            ]
         },
         "belt of dex": {
             "description": "more dex",
-            "value": 6,
             "magic": true,
-            "type": "enhancement",
-            "affects": {
-                "abilities": "dexterity"
-            }
+            "effects": [
+                {
+                    "value": 6,
+                    "type": "enhancement",
+                    "affects": {
+                        "abilities": "dexterity"
+                    }
+                }
+            ]
         },
         "cloak of resistance": {
-            "value": 1,
-            "type": "resistance",
-            "affects": {
-                "saves": true
-            }
+            "effects": [
+                {
+                    "value": 1,
+                    "type": "resistance",
+                    "affects": {
+                        "saves": true
+                    }
+                }
+            ]
         }
     }
 }
