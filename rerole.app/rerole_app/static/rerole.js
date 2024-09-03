@@ -33,13 +33,18 @@ class EditFeat{
         this.root.classList.add("edit-modal");
         this.root.classList.add("feat");
 
-        this.name = document.createElement("h3");
-        this.name.innerHTML = name;
+        this.name_label = document.createElement("label");
+        let span = document.createElement("span");
+        span.innerHTML = "Name:";
+        this.name = document.createElement("input");
+        this.name.setAttribute("type", "text");
+        this.name.value = name;
+        this.name_label.append(span, this.name);
 
         this.description_label = document.createElement("label");
         this.description_label.setAttribute("name", "description");
 
-        let span = document.createElement("span");
+        span = document.createElement("span");
         span.innerHTML = "Description:";
         this.description = document.createElement("textarea");
         let description = data.description || "";
@@ -92,7 +97,7 @@ class EditFeat{
         this.buttons.append(left_div, right_div);
 
         this.root.append(
-            this.name,
+            this.name_label,
             this.description_label,
             this.type_label,
             this.effects,
@@ -100,7 +105,7 @@ class EditFeat{
         );
     }
     getName() {
-        return this.name.innerHTML;
+        return this.name.value;
     }
     getFeat() {
         let feat = {};
