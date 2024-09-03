@@ -107,7 +107,6 @@ class Effect {
 
         this.value = document.createElement("input");
         this.type = document.createElement("select");
-        this.magic = document.createElement("label");
         this.group = document.createElement("div");
 
         this.value.setAttribute("type", "text");
@@ -130,12 +129,6 @@ class Effect {
         }
         this.type.value = type;
 
-        let magic_checkbox = document.createElement("input");
-        magic_checkbox.setAttribute("type", "checkbox");
-        let magic_state = effect_data.magic || false;
-        magic_checkbox.checked = magic_state;
-        this.magic.append(magic_checkbox, "magic");
-
         this.group.classList.add("affects-groups");
 
         let div;
@@ -147,10 +140,6 @@ class Effect {
         div = document.createElement("div");
         this.root.appendChild(div);
         div.appendChild(this.type);
-
-        div = document.createElement("div");
-        this.root.appendChild(div);
-        div.appendChild(this.magic);
 
         div = document.createElement("div");
         this.root.appendChild(div);
@@ -187,10 +176,6 @@ class Effect {
         let type = this.type.value;
         if (type !== Effect.none) {
             effect["type"] = type;
-        }
-        let magic = this.magic.firstElementChild.checked;
-        if (magic) {
-            effect["magic"] = true;
         }
 
         let affects = {};
