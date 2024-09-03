@@ -26,6 +26,200 @@ var EFFECT_TYPES = [
     "trait",
 ];
 
+class Model {
+    constructor(data = {}) {
+        this.data = data;
+    }
+    setData(data) {
+        this.data = data;
+        return put_character(this.data)
+            .then((response) => {
+                this.data = response;
+                return response;
+            });
+    }
+    getData() {
+        return this.data;
+    }
+}
+
+class Sheet {
+    constructor(model) {
+        const data = model.getData();
+
+        this.model = model;
+
+        this.modal = document.getElementById("modal");
+
+        this.view = {};
+        this.view.abilities = {};
+        this.view.saves = {};
+        this.view.feats = {};
+
+        this.document = {};
+        this.document.general = document.getElementById("general");
+        this.document.abilities = document.getElementById("abilities");
+        this.document.saves = document.getElementById("saves");
+        this.document.feats = document.getElementById("feats");
+
+        this.view.name = document.createElement("input");
+        this.view.name.setAttribute("type", "text");
+        let name_span = document.createElement("span");
+        name_span.innerHTML = "Name:";
+        let name_label = document.createElement("label");
+        name_label.append(name_span, this.view.name);
+        this.document.general.append(name_label);
+
+        for (const ability of Object.keys(data.abilities)) {
+            const this_ability = data.abilities[ability];
+            this.view.abilities[ability] = {};
+            let ability_div = document.createElement("div");
+            ability_div.classList.add("ability");
+            this.document.abilities.append(ability_div);
+
+            const ability_score = document.createElement("input");
+            this.view.abilities[ability].score = ability_score;
+            ability_score.setAttribute("type", "text");
+            let ability_label_span = document.createElement("span");
+            ability_label_span.innerHTML = ability;
+            let ability_label = document.createElement("label");
+            ability_label.append(ability_label_span, ability_score);
+
+            this.view.abilities[ability].modified_score = document.createElement("p");
+            let ability_modified_score_span = document.createElement("span");
+            ability_modified_score_span.innerHTML = "Modified score:";
+            let ability_modified_score_label = document.createElement("label");
+            ability_modified_score_label.append(ability_modified_score_span, this.view.abilities[ability].modified_score);
+
+
+            this.view.abilities[ability].modifier = document.createElement("p");
+            let ability_modifier_span = document.createElement("span");
+            ability_modifier_span.innerHTML = "Modifier:";
+            let ability_modifier_label = document.createElement("label");
+            ability_modifier_label.append(ability_modifier_span, this.view.abilities[ability].modifier);
+
+            this.view.abilities[ability].get = function() {
+                let ability_score = parseInt(this.score.value);
+                if (isNaN(ability_score)) {
+                    ability_score = 0;
+                }
+                return {
+                    score: ability_score
+                }
+            }
+
+            this.view.abilities[ability].set = function(data) {
+                this.score.value = data.score.toString() || "0";
+                this.modified_score.innerHTML = data.modified_score.toString() || "0";
+                this.modifier.innerHTML = data.modifier.toString() || "0";
+            };
+
+            ability_score.addEventListener("change", function(ability) {
+                const data = this.model.getData();
+                const view_ability = this.view.abilities[ability].get();
+                const old_ability = data.abilities[ability];
+                const new_ability = {...old_ability, ...view_ability};
+                data.abilities[ability] = new_ability;
+                this.model.setData(data)
+                    .then(() => {
+                        this.updateView();
+                    });
+            }.bind(this, ability));
+
+            ability_div.append(
+                ability_label,
+                ability_modified_score_label,
+                ability_modifier_label,
+            );
+        }
+
+        for (const save of Object.keys(data.saves)) {
+            const this_save = data.saves[save];
+            this.view.saves[save] = {};
+            const save_div = document.createElement("div");
+            save_div.classList.add("save");
+            this.document.saves.append(save_div);
+
+            const save_value = document.createElement("input");
+            this.view.saves[save].value = save_value;
+            save_value.setAttribute("type", "text");
+            const save_label_span = document.createElement("span");
+            save_label_span.innerHTML = save;
+            const save_label = document.createElement("label");
+            save_label.append(save_label_span, save_value);
+
+            const save_modifier = document.createElement("p");
+            this.view.saves[save].modifier = save_modifier;
+            save_modifier.innerHTML = this_save.modifier.toString() || "0";
+            const save_modifier_label_span = document.createElement("span");
+            save_modifier_label_span.innerHTML = "Modifier:";
+            const save_modifier_label = document.createElement("label");
+            save_modifier_label.append(save_modifier_label_span, save_modifier);
+
+            this.view.saves[save].get = function() {
+                let save_value = parseInt(this.value.value);
+                if (isNaN(save_value)) {
+                    save_value = 0;
+                }
+                return {
+                    value: save_value
+                }
+            };
+
+            this.view.saves[save].set = function(data) {
+                this.value.value = data.value.toString() || "0";
+                this.modifier.innerHTML = data.modifier.toString() || "0";
+            };
+
+            save_value.addEventListener("change", function(save) {
+                const data = this.model.getData();
+                const view_save = this.view.saves[save].get();
+                const old_save = data.saves[save];
+                const new_save = {...old_save, ...view_save};
+                data.saves[save] = new_save;
+                this.model.setData(data)
+                    .then(() => {
+                        this.updateView();
+                    });
+            }.bind(this, save));
+
+            save_div.append(save_label, save_modifier_label);
+        }
+
+        for (const feat of Object.keys(data.feats)) {
+            const this_feat = data.feats[feat];
+
+            this.view.feats[feat] = {};
+
+            const feat_button = document.createElement("button");
+            feat_button.setAttribute("type", "button");
+            feat_button.innerHTML = feat;
+            this.view.feats[feat].button = feat_button;
+
+            feat_button.addEventListener("click", function(feat_name) {
+                const feat = this.model.getData().feats[feat] || {};
+                this.editFeat.set(feat_name, feat);
+                this.editFeat.open();
+            });
+
+            this.document.feats.append(this.view.feats[feat].button);
+        }
+
+        this.updateView();
+    }
+    updateView() {
+        const data = this.model.getData();
+        this.view.name.value = data.name || "Unnamed";
+
+        for (const ability of Object.keys(data.abilities)) {
+            this.view.abilities[ability].set(data.abilities[ability]);
+        }
+
+        for (const save of Object.keys(data.saves)) {
+            this.view.saves[save].set(data.saves[save]);
+        }
+    }
+}
 
 class EditFeat{
     constructor(name, sheet = {}) {
@@ -428,191 +622,6 @@ async function put_character(d) {
 }
 
 
-var M = {
-    data: {},
-    setData: function(d) {
-        this.data = d;
-        put_character(this.data)
-            .then((response) => {
-                this.data = response;
-                C.handler.call(C);
-            });
-    },
-    getData: function() {
-        return this.data;
-    }
-}
-
-var V = {
-    abilities: {},
-    saves: {},
-    feats: {},
-}
-
-var C = {
-    model: M,
-    view: V,
-    handler: function() {
-        this.view.update(this.model);
-    }
-}
-
-function initialize_view(model, view) {
-    const data = model.getData();
-
-    let label;
-    let summary;
-    let score;
-    let modified_score;
-    let modifier;
-    let value;
-    let description;
-
-    const general = document.getElementById("general");
-    label = document.createElement("label");
-    label.setAttribute("for", "name");
-    label.innerHTML = "Name:";
-    general.appendChild(label);
-
-    view.name = document.createElement("input");
-    view.name.setAttribute("id", "name");
-    view.name.setAttribute("type", "text");
-    view.name.addEventListener("change", function() {
-        let data = model.getData();
-        let name = view.name.value;
-        data.name = name;
-        model.setData(data);
-    })
-    general.appendChild(view.name);
-
-    const abilities = document.getElementById("abilities");
-    for (const ability of Object.keys(data.abilities)) {
-        let a = document.createElement("div");
-        a.setAttribute("class", "ability");
-        abilities.appendChild(a);
-
-        label = document.createElement("label");
-        label.setAttribute("for", `abilities.${ability}.score`);
-        label.innerHTML = ability;
-        a.appendChild(label);
-
-        score = document.createElement("input");
-        score.setAttribute("id", `abilities.${ability}.score`);
-        score.setAttribute("type", "text");
-        score.addEventListener("change", function() {
-            update_model_ability(model, view, ability);
-        });
-        a.appendChild(score);
-
-        label = document.createElement("label");
-        label.setAttribute("for", `abilities.${ability}.modified_score`);
-        label.innerHTML = "Modified score:";
-        a.appendChild(label);
-
-        modified_score = document.createElement("p");
-        modified_score.setAttribute("id", `abilities.${ability}.modified_score`);
-        a.appendChild(modified_score);
-
-        label = document.createElement("label");
-        label.setAttribute("for", `abilities.${ability}.modifier`);
-        label.innerHTML = "Modifier:";
-        a.appendChild(label);
-
-        modifier = document.createElement("p");
-        modifier.setAttribute("id", `abilities.${ability}.modifier`);
-        a.appendChild(modifier);
-
-        view.abilities[ability] = {
-            score: score,
-            modified_score: modified_score,
-            modifier: modifier
-        }
-    }
-
-    const saves = document.getElementById("saves");
-    for (const save of Object.keys(data.saves)) {
-        let s = document.createElement("div");
-        s.setAttribute("class", "save");
-        saves.appendChild(s);
-
-        label = document.createElement("label");
-        label.setAttribute("for", `saves.${save}.value`);
-        label.innerHTML = save;
-        s.appendChild(label);
-
-        value = document.createElement("input");
-        value.setAttribute("id", `saves.${save}.value`);
-        value.setAttribute("type", "text");
-        value.addEventListener("change", function() {
-            update_model_save(model, view, save);
-        });
-        s.appendChild(value);
-
-        label = document.createElement("label");
-        label.setAttribute("for", `saves.${save}.modifier`);
-        label.innerHTML = "Modifier:";
-        s.appendChild(label);
-
-        modifier = document.createElement("p");
-        modifier.setAttribute("id", `saves.${save}.modifier`);
-        s.appendChild(modifier);
-
-        view.saves[save] = {
-            value: value,
-            modifier: modifier
-        }
-    }
-
-    const feats = document.getElementById("feats");
-    for (const feat of Object.keys(data.feats)) {
-        const feat_data = data.feats[feat];
-
-        let feat_button = document.createElement("button");
-        feat_button.setAttribute("type", "button");
-        feat_button.innerHTML = feat;
-        feats.append(feat_button);
-    }
-
-    view.update = function(model) {
-        let data = model.getData();
-
-        this.name.value = data.name;
-
-        for (const ability of Object.keys(this.abilities)) {
-            this.abilities[ability].score.value = data.abilities[ability].score;
-            this.abilities[ability].modified_score.innerHTML = data.abilities[ability].modified_score;
-            this.abilities[ability].modifier.innerHTML = data.abilities[ability].modifier;
-        }
-
-        for (const save of Object.keys(this.saves)) {
-            this.saves[save].value.value = data.saves[save].value;
-            this.saves[save].modifier.innerHTML = data.saves[save].modifier;
-        }
-    }
-}
-
-function update_model_ability(m, v, ability_name) {
-    let data = m.getData();
-    let raw_score = v.abilities[ability_name].score.value;
-    let score = parseInt(raw_score);
-    if (isNaN(score)) {
-        score = 0;
-    }
-    data.abilities[ability_name].score = score;
-    m.setData(data);
-}
-
-function update_model_save(m, v, save_name) {
-    let data = m.getData();
-    let raw_value = v.saves[save_name].value.value;
-    let value = parseInt(raw_value);
-    if (isNaN(value)) {
-        value = 0;
-    }
-    data.saves[save_name].value = value;
-    m.setData(data);
-}
-
 function logout() {
     console.log("logout");
     let token = window.localStorage.getItem("token");
@@ -638,11 +647,11 @@ function get_authorization_header() {
     return value;
 }
 
+var SHEET;
 window.onload = function() {
     get_character()
         .then((data) => {
-            M.data = data;
-            initialize_view(M, V);
-            C.handler.call(C);
+            const model = new Model(data);
+            SHEET = new Sheet(model);
         });
 }
