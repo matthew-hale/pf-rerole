@@ -28,10 +28,12 @@ var EFFECT_TYPES = [
 
 
 class EditFeat{
-    constructor(name, sheet = {}, data = {}) {
+    constructor(name, sheet = {}) {
         this.root = document.createElement("div");
         this.root.classList.add("edit-modal");
         this.root.classList.add("feat");
+
+        const data = sheet.feats[name] || {};
 
         this.name_label = document.createElement("label");
         let span = document.createElement("span");
