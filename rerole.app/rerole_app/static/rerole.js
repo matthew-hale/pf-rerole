@@ -33,27 +33,29 @@ class EditFeat{
         this.root.classList.add("edit-modal");
         this.root.classList.add("feat");
 
-        this.title = document.createElement("h3");
-        this.title.innerHTML = name;
+        this.name = document.createElement("h3");
+        this.name.innerHTML = name;
 
-        this.description = document.createElement("label");
-        this.description.setAttribute("name", "description");
+        this.description_label = document.createElement("label");
+        this.description_label.setAttribute("name", "description");
 
         let span = document.createElement("span");
         span.innerHTML = "Description:";
-        let input = document.createElement("textarea");
-        input.value = data.description;
-        this.description.append(span, input);
+        this.description = document.createElement("textarea");
+        let description = data.description || "";
+        this.description.value = description;
+        this.description_label.append(span, this.description);
 
-        this.type = document.createElement("label");
-        this.type.setAttribute("name", "type");
+        this.type_label = document.createElement("label");
+        this.type_label.setAttribute("name", "type");
 
         span = document.createElement("span");
         span.innerHTML = "Type:";
-        input = document.createElement("input");
-        input.setAttribute("type", "text");
-        this.type.append(span, input);
+        this.type = document.createElement("input");
+        this.type.setAttribute("type", "text");
+        this.type_label.append(span, this.type);
 
+        this.effect_objs = [];
         this.effects = document.createElement("label");
         span = document.createElement("span");
         span.innerHTML = "Effects:";
@@ -64,6 +66,7 @@ class EditFeat{
         const effects = data.effects || [];
         for (const effect of effects) {
             let e = new Effect(sheet, effect);
+            this.effect_objs.push(e);
             div.appendChild(e.root);
         }
 
@@ -82,18 +85,36 @@ class EditFeat{
         ok_button.innerHTML = "Ok";
         let delete_button = document.createElement("button");
         delete_button.setAttribute("type", "button");
+        delete_button.classList.add("delete");
         delete_button.innerHTML = "Delete";
         right_div.append(ok_button, delete_button);
 
         this.buttons.append(left_div, right_div);
 
         this.root.append(
-            this.title,
-            this.description,
-            this.type,
+            this.name,
+            this.description_label,
+            this.type_label,
             this.effects,
             this.buttons,
         );
+    }
+    getName() {
+        return this.name.innerHTML;
+    }
+    getFeat() {
+        let feat = {};
+        feat["description"] = this.description.value;
+        feat["type"] = this.type.value;
+        let effects = [];
+        for (const effect of this.effect_objs) {
+            effects.push(effect.getEffect());
+        }
+        if (effects) {
+            feat["effects"] = effects;
+        }
+
+        return feat;
     }
 }
 
