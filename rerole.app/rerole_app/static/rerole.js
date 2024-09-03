@@ -563,6 +563,16 @@ function initialize_view(model, view) {
         }
     }
 
+    const feats = document.getElementById("feats");
+    for (const feat of Object.keys(data.feats)) {
+        const feat_data = data.feats[feat];
+
+        let feat_button = document.createElement("button");
+        feat_button.setAttribute("type", "button");
+        feat_button.innerHTML = feat;
+        feats.append(feat_button);
+    }
+
     view.update = function(model) {
         let data = model.getData();
 
