@@ -109,20 +109,20 @@ class Sheet(Dict):
         Note that this method does not directly interact whatsoever with the "antimagic_field" key: `apply_antimagic_field` receives a boolean value, then applies the proper state to all relevant magical effects.
         """
         search_fn = {
-            True: active_magic_effect,
-            False: inactive_magic_effect,
+            True: active_magic_effect_source,
+            False: inactive_magic_effect_source,
         }.get(on)
 
-        effect_key_seqs = self.search(search_fn)
-        if not effect_key_seqs:
+        effect_source_key_seqs = self.search(search_fn)
+        if not effect_source_key_seqs:
             return
 
-        for seq in effect_key_seqs:
-            e = self.get_in(seq, default={})
-            effect.toggle_antimagic_field(e)
+        for seq in effect_source_key_seqs:
+            effect_source = self.get_in(seq, default={})
+            effect.toggle_antimagic_field(effect_source)
 
     def build_effect_index(self):
-        """Finds all effects, and builds an index of `affected_thing->effect key seq`.
+        """Finds all active effects, and builds an index of `affected_thing->effect key seq`.
 
         This function assumes that names of things are globally unique. If a character has an ability called "strength" and a skill called "strength", the resulting effect index will squish them together into a single entry.
 
@@ -131,36 +131,61 @@ class Sheet(Dict):
         if "effect_index" in self:
             del self["effect_index"]
 
-        effects = self.search(lambda x: isinstance(x, dict) and "affects" in x.keys())
-        if not effects:
+        effect_sources = self.search(active_effect_source)
+        if not effect_sources:
             return
 
         effect_index = Dict()
-        for key_seq in effects:
-            effect = self.get_in(key_seq)
-            if not effect:
+        for key_seq in effect_sources:
+            source = self.get_in(key_seq)
+            if not source:
                 continue
 
-            affecting_rules = effect["affects"]
+            effects = source.get("effects", [])
+            for idx, e in enumerate(effects):
+                effect_key_seq = key_seq + ["effects", idx]
 
-            for group, value in affecting_rules.items():
-                type_ = type(value)
-                if type_ is bool and value is True:
-                    for item in self.get(group, {}).keys():
-                        effect_index.add_or_append(item, key_seq)
-                elif type_ is str:
-                    effect_index.add_or_append(value, key_seq)
-                elif type_ is list:
-                    for item in value:
-                        effect_index.add_or_append(item, key_seq)
-                else:
-                    continue
+                affecting_rules = e.get("affects", {})
+
+                for group, value in affecting_rules.items():
+                    type_ = type(value)
+                    if type_ is bool and value is True:
+                        for item in self.get(group, {}).keys():
+                            effect_index.add_or_append(item, effect_key_seq)
+                    elif type_ is str:
+                        effect_index.add_or_append(value, effect_key_seq)
+                    elif type_ is list:
+                        for item in value:
+                            effect_index.add_or_append(item, effect_key_seq)
+                    else:
+                        continue
 
         self["effect_index"] = effect_index
 
 
-def active_magic_effect(e: dict) -> bool:
-    return isinstance(e, dict) and effect.active(e) and e.get("magic", False)
+"""
+Utility functions used for filters, searches, etc.
+"""
+def effect_source(e: dict) -> bool:
+    try:
+        return e.get("effects")
+    except:
+        return False
 
-def inactive_magic_effect(e: dict) -> bool:
-    return isinstance(e, dict) and effect.inactive(e) and e.get("magic", False)
+def active_effect_source(e: dict) -> bool:
+    try:
+        return effect_source(e) and effect.active(e)
+    except:
+        return False
+
+def active_magic_effect_source(e: dict) -> bool:
+    try:
+        return active_effect_source(e) and e.get("magic", False)
+    except:
+        return False
+
+def inactive_magic_effect_source(e: dict) -> bool:
+    try:
+        return effect_source(e) and effect.inactive(e) and e.get("magic", False)
+    except:
+        return False
