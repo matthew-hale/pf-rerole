@@ -11,23 +11,23 @@ def test_build_effect_index():
     effect_index = data.get("effect_index")
 
     assert effect_index["strength"] == [
-        ["spells", "mighty strength"],
-        ["equipment", "belt of stronk"],
+        ["spells", "mighty strength", "effects", 0],
+        ["equipment", "belt of stronk", "effects", 0],
     ]
 
     assert effect_index["dexterity"] == [
-        ["equipment", "belt of dex"],
+        ["equipment", "belt of dex", "effects", 0],
     ]
 
     assert effect_index["will"] == [
-        ["spells", "Sacred Oath", "1"],
-        ["feats", "iron will"],
-        ["equipment", "cloak of resistance"],
+        ["spells", "Sacred Oath", "effects", 0],
+        ["feats", "iron will", "effects", 0],
+        ["equipment", "cloak of resistance", "effects", 0],
     ]
 
     assert effect_index["acrobatics"] == [
-        ["spells", "general skill buff", "1"],
-        ["feats", "skill focus (acrobatics)"],
+        ["spells", "general skill buff", "effects", 0],
+        ["feats", "skill focus (acrobatics)", "effects", 0],
     ]
 
 def test_calculate():
