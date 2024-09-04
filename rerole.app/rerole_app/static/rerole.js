@@ -261,6 +261,8 @@ class EditFeat{
         this.root.classList.add("edit-modal");
         this.root.classList.add("feat");
 
+        this.original_name = name;
+
         const data = sheet.feats[name] || {};
 
         this.name_label = document.createElement("label");
@@ -288,6 +290,8 @@ class EditFeat{
         span.innerHTML = "Type:";
         this.type = document.createElement("input");
         this.type.setAttribute("type", "text");
+        let type = data.type || "";
+        this.type.value = type;
         this.type_label.append(span, this.type);
 
         this.effect_objs = [];
@@ -323,6 +327,10 @@ class EditFeat{
         delete_button.classList.add("delete");
         delete_button.innerHTML = "Delete";
         right_div.append(ok_button, delete_button);
+
+        this.cancel_button = cancel_button;
+        this.ok_button = ok_button;
+        this.delete_button = delete_button;
 
         this.buttons.append(left_div, right_div);
 
