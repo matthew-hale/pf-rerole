@@ -213,6 +213,46 @@ class Sheet {
             this.view.saves[save].set(data.saves[save]);
         }
     }
+    newFeat(name, feat_data) {
+        const data = this.model.getData();
+        this.view.feats[name] = {};
+
+        const feat_button = document.createElement("button");
+        feat_button.setAttribute("type", "button");
+        feat_button.innerHTML = name;
+        this.view.feats[name].button = feat_button;
+
+        this.document.feats.append(feat_button);
+
+        data.feats[name] = feat_data;
+
+        this.model.setData(data)
+            .then(() => {
+                this.updateView();
+            });
+    }
+    updateFeat(name, feat_data) {
+        const data = this.model.getData();
+        const current_feat = data.feats[name] || {};
+        const new_feat = {...current_feat, ...feat_data};
+        data.feats[name] = new_feat;
+
+        this.model.setData(data)
+            .then(() => {
+                this.updateView();
+            });
+    }
+    deleteFeat(name) {
+        const data = this.model.getData();
+        delete data.feats[name];
+        this.view.feats[name].button.outerHTML = "";
+        delete this.view.feats[name];
+
+        this.model.setData(data)
+            .then(() => {
+                this.updateView();
+            });
+    }
 }
 
 class EditFeat{
