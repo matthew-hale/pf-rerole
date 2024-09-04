@@ -213,6 +213,52 @@ class Sheet {
             this.view.saves[save].set(data.saves[save]);
         }
     }
+    editFeat(name) {
+        this.EditFeat = new EditFeat(name, this.model.getData());
+        this.modal.appendChild(this.EditFeat.root);
+
+        this.EditFeat.cancel_button.addEventListener("click", function() {
+            this.EditFeat.close();
+        }.bind(this));
+        this.EditFeat.ok_button.addEventListener("click", function() {
+            const original_feat_name = this.EditFeat.original_name;
+            const feat_name = this.EditFeat.getName();
+            const feat_data = this.EditFeat.getFeat();
+
+            const is_new_feat = (original_feat_name === "");
+            const is_new_feat_name = (feat_name !== original_feat_name);
+
+            if (is_new_feat) {
+                this.newFeat(feat_name, feat_data);
+                this.EditFeat.close();
+                return;
+            }
+            if (!is_new_feat && is_new_feat_name) {
+                this.newFeat(feat_name, feat_data)
+                    .then(() => {
+                        this.deleteFeat(original_feat_name);
+                    })
+                    .finally(() => {
+                        this.EditFeat.close();
+                    });
+                return;
+            }
+            this.updateFeat(feat_name, feat_data);
+            this.EditFeat.close();
+        }.bind(this));
+        this.EditFeat.delete_button.addEventListener("click", function() {
+            const feat_name = this.EditFeat.getName();
+            this.deleteFeat(feat_name);
+            this.EditFeat.close();
+        }.bind(this));
+        this.EditFeat.close = function() {
+            this.closeModal();
+            this.EditFeat.root.outerHTML = "";
+            this.EditFeat = null;
+        }.bind(this);
+
+        this.openModal();
+    }
     newFeat(name, feat_data) {
         const data = this.model.getData();
         this.view.feats[name] = {};
