@@ -186,6 +186,11 @@ class Sheet {
             save_div.append(save_label, save_modifier_label);
         }
 
+        const add_feat_button = document.getElementById("add-feat-button");
+        add_feat_button.addEventListener("click", function() {
+            this.editFeat("");
+        }.bind(this));
+
         for (const feat of Object.keys(data.feats)) {
             const this_feat = data.feats[feat];
 
@@ -194,6 +199,9 @@ class Sheet {
             const feat_button = document.createElement("button");
             feat_button.setAttribute("type", "button");
             feat_button.innerHTML = feat;
+            feat_button.addEventListener("click", function(feat_name) {
+                this.editFeat(feat_name);
+            }.bind(this, feat));
             this.view.feats[feat].button = feat_button;
 
             this.document.feats.append(this.view.feats[feat].button);
