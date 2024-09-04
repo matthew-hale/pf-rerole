@@ -196,12 +196,6 @@ class Sheet {
             feat_button.innerHTML = feat;
             this.view.feats[feat].button = feat_button;
 
-            feat_button.addEventListener("click", function(feat_name) {
-                const feat = this.model.getData().feats[feat] || {};
-                this.editFeat.set(feat_name, feat);
-                this.editFeat.open();
-            });
-
             this.document.feats.append(this.view.feats[feat].button);
         }
 
