@@ -226,7 +226,7 @@ class Sheet {
 
         data.feats[name] = feat_data;
 
-        this.model.setData(data)
+        return this.model.setData(data)
             .then(() => {
                 this.updateView();
             });
@@ -237,7 +237,7 @@ class Sheet {
         const new_feat = {...current_feat, ...feat_data};
         data.feats[name] = new_feat;
 
-        this.model.setData(data)
+        return this.model.setData(data)
             .then(() => {
                 this.updateView();
             });
@@ -248,7 +248,7 @@ class Sheet {
         this.view.feats[name].button.outerHTML = "";
         delete this.view.feats[name];
 
-        this.model.setData(data)
+        return this.model.setData(data)
             .then(() => {
                 this.updateView();
             });
