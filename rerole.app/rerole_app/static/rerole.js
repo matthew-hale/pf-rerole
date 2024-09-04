@@ -253,6 +253,12 @@ class Sheet {
                 this.updateView();
             });
     }
+    closeModal() {
+        this.modal.style.display = "none";
+    }
+    openModal() {
+        this.modal.style.display = "flex";
+    }
 }
 
 class EditFeat{
