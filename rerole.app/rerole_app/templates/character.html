@@ -12,30 +12,31 @@
 <body>
 <div id="modal"></div>
 
-<div class="main-wrapper">
-    <div class="header">
-        <p>To contribute, visit <a href="https://github.com/matthew-hale/pf-rerole">the pf-rerole project on GitHub</a></p>
-        <div class="buttons">
-            <a href="{{ url_for('site.index') }}">Home</a>
-            <a href="{{ url_for('site.logout') }}">Logout</a>
-        </div>
-    </div>
-</div>
+<header>
+    <p>To contribute, visit <a href="https://github.com/matthew-hale/pf-rerole">the pf-rerole project on GitHub</a></p>
+    <nav>
+        <ul>
+            <li><a href="{{ url_for('site.index') }}">Home</a></li>
+            <li><a href="{{ url_for('site.logout') }}">Logout</a></li>
+        </ul>
+    </nav>
+</header>
 
-<div id="character-sheet">
-    <div id="general">
-    </div>
+<main id="character-sheet">
+    <h2>General</h2>
+    <section id="general">
+    </section>
     <h2>Abilities</h2>
-    <div id="abilities">
-    </div>
+    <section id="abilities">
+    </section>
     <h2>Saves</h2>
-    <div id="saves">
-    </div>
+    <section id="saves">
+    </section>
     <h2>Feats</h2>
     <button id="add-feat-button" class="button" type="button">Add</button>
-    <div id="feats">
-    </div>
-</div>
+    <section id="feats">
+    </section>
+</main>
 
 </body>
 </html>

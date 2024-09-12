@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
     <title>Rerole</title>
+    <!--
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}"/>
+    -->
     <script type="text/javascript">
         let token = "{{ token }}"
         if (token) {
@@ -13,22 +15,22 @@
 </head>
 
 <body>
-<div class="main-wrapper">
 
-<div class="header">
+<header>
     <p>To contribute, visit <a href="https://github.com/matthew-hale/pf-rerole">the pf-rerole project on GitHub</a></p>
-    <div class="buttons">
-        <button type="button" onclick=logout()>Logout</button>
-    </div>
-</div>
+    <nav>
+        <ul>
+            <li><a href="{{ url_for('site.logout') }}">Logout</a></li>
+        </ul>
+    </nav>
+</header>
 
-<div id="character-list" class="character-list">
-    <h2>Characters</h2>
-    <div class="buttons">
+<main id="character-list" class="character-list">
+    <section>
+        <h2>Characters</h2>
         <button type="button" onclick=create_character()>New Character</button>
-    </div>
-</div>
+    </section>
+</main>
 
-</div>
 </body>
 </html>
